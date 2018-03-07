@@ -6,8 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.herglotz.twitch.api.irc.messages.ChatMessage;
+import de.herglotz.twitch.api.irc.messages.Message;
+import de.herglotz.twitch.api.irc.messages.PingMessage;
+import de.herglotz.twitch.api.irc.messages.RawMessage;
+
 public class TwitchMessageParserTest {
 
+	private static final String RAWMSG = "This is not the correct format for a PRIVMSG";
 	private static final String USERNAME = "someUsername";
 	private static final String TARGET_CHANNEL = "thisIsTheTargetChannel";
 	private static final String TEST_MESSAGE = "this is a test message";
@@ -30,30 +36,35 @@ public class TwitchMessageParserTest {
 
 	@Test
 	public void testThatUsernameIsParsed() throws Exception {
-		ChatMessage parsed = parser.parse(message);
-		assertEquals(USERNAME, parsed.getUsername());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testThatInvalidMessageThrowsException1() throws Exception {
-		parser.parse("This is not the correct format");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testThatInvalidMessageThrowsException2() throws Exception {
-		parser.parse("This is also not the correct format! Just to be sure...");
+		Message parsed = parser.parse(message);
+		assertEquals(ChatMessage.class, parsed.getClass());
+		assertEquals(USERNAME, ((ChatMessage) parsed).getUsername());
 	}
 
 	@Test
 	public void testThatTargetChannelIsParsed() throws Exception {
-		ChatMessage parsed = parser.parse(message);
-		assertEquals(TARGET_CHANNEL, parsed.getTargetChannel());
+		Message parsed = parser.parse(message);
+		assertEquals(ChatMessage.class, parsed.getClass());
+		assertEquals(TARGET_CHANNEL, ((ChatMessage) parsed).getTargetChannel());
 	}
 
 	@Test
 	public void testThatMessageIsParsed() throws Exception {
-		ChatMessage parsed = parser.parse(message);
+		Message parsed = parser.parse(message);
+		assertEquals(ChatMessage.class, parsed.getClass());
 		assertEquals(TEST_MESSAGE, parsed.getMessage());
 	}
 
+	@Test
+	public void testThatRawMessageGetsParsed() throws Exception {
+		Message parsed = parser.parse(RAWMSG);
+		assertEquals(RawMessage.class, parsed.getClass());
+		assertEquals(RAWMSG, parsed.getMessage());
+	}
+
+	@Test
+	public void testThatPingMessageGetsParsed() throws Exception {
+		Message parsed = parser.parse(TwitchMessageParser.TWITCH_API_PING);
+		assertEquals(PingMessage.class, parsed.getClass());
+	}
 }

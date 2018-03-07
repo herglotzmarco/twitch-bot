@@ -13,6 +13,8 @@ import javax.net.ssl.SSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.herglotz.twitch.api.irc.messages.Message;
+import de.herglotz.twitch.api.irc.messages.PingMessage;
 import de.herglotz.twitch.credentials.CredentialProvider;
 
 public class TwitchApiFacade {
@@ -28,10 +30,11 @@ public class TwitchApiFacade {
 	private static final String TWITCH_API_REQCOMMANDS = "CAP REQ :twitch.tv/commands";
 	private static final String TWITCH_API_REQTAGS = "CAP REQ :twitch.tv/tags";
 
-	private static final String TWITCH_API_PING = "PING :tmi.twitch.tv";
 	private static final String TWITCH_API_PONG = "PONG :tmi.twitch.tv";
 
 	private CredentialProvider credentialProvider;
+
+	private TwitchChatWriter twitchChatWriter;
 
 	public TwitchApiFacade(CredentialProvider credentialProvider) {
 		this.credentialProvider = credentialProvider;
@@ -45,7 +48,7 @@ public class TwitchApiFacade {
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(twitchApi.getInputStream(), Charset.forName("UTF-8")));
 
-			TwitchChatWriter twitchChatWriter = new TwitchChatWriter(writer);
+			twitchChatWriter = new TwitchChatWriter(writer);
 			TwitchChatReader twitchChatReader = new TwitchChatReader(reader, this::handleLine);
 
 			writer.println(String.format(TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
@@ -61,7 +64,10 @@ public class TwitchApiFacade {
 		}
 	}
 
-	public void handleLine(ChatMessage message) {
+	public void handleLine(Message message) {
 		LOG.info(message.toString());
+		if (message instanceof PingMessage) {
+			twitchChatWriter.sendRawMessage(TWITCH_API_PONG);
+		}
 	}
 }

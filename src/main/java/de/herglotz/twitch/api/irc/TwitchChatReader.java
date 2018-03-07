@@ -7,15 +7,17 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.herglotz.twitch.api.irc.messages.Message;
+
 public class TwitchChatReader implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitchChatReader.class);
 
 	private BufferedReader reader;
 
-	private Consumer<ChatMessage> lineHandler;
+	private Consumer<Message> lineHandler;
 
-	public TwitchChatReader(BufferedReader reader, Consumer<ChatMessage> lineHandler) {
+	public TwitchChatReader(BufferedReader reader, Consumer<Message> lineHandler) {
 		this.reader = reader;
 		this.lineHandler = lineHandler;
 	}
@@ -26,11 +28,8 @@ public class TwitchChatReader implements Runnable {
 		TwitchMessageParser parser = new TwitchMessageParser();
 		try {
 			while ((line = reader.readLine()) != null) {
-				if (line.contains("PRIVMSG")) {
-					ChatMessage message = parser.parse(line);
-					lineHandler.accept(message);
-				}
-				LOG.info(line);
+				Message message = parser.parse(line);
+				lineHandler.accept(message);
 			}
 		} catch (IOException e) {
 			LOG.error("Error reading twitch api", e);
