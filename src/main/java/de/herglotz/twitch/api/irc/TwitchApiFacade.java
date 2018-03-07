@@ -1,4 +1,4 @@
-package de.herglotz.twitch.main;
+package de.herglotz.twitch.api.irc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +27,9 @@ public class TwitchApiFacade {
 	private static final String TWITCH_API_JOIN = "JOIN #%s";
 	private static final String TWITCH_API_REQCOMMANDS = "CAP REQ :twitch.tv/commands";
 	private static final String TWITCH_API_REQTAGS = "CAP REQ :twitch.tv/tags";
+
+	private static final String TWITCH_API_PING = "PING :tmi.twitch.tv";
+	private static final String TWITCH_API_PONG = "PONG :tmi.twitch.tv";
 
 	private CredentialProvider credentialProvider;
 
@@ -58,7 +61,7 @@ public class TwitchApiFacade {
 		}
 	}
 
-	public void handleLine(String line) {
-		LOG.info(line);
+	public void handleLine(ChatMessage message) {
+		LOG.info(message.toString());
 	}
 }

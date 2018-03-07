@@ -1,4 +1,4 @@
-package de.herglotz.twitch.main;
+package de.herglotz.twitch.api.irc;
 
 import java.io.PrintWriter;
 

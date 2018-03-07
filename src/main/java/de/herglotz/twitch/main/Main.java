@@ -2,6 +2,7 @@ package de.herglotz.twitch.main;
 
 import java.io.File;
 
+import de.herglotz.twitch.api.irc.TwitchApiFacade;
 import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.credentials.FileCredentialProvider;
 import de.herglotz.twitch.credentials.InvalidPropertiesFileException;

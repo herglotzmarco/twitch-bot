@@ -1,4 +1,4 @@
-package de.herglotz.twitch.main;
+package de.herglotz.twitch.api.irc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +13,9 @@ public class TwitchChatReader implements Runnable {
 
 	private BufferedReader reader;
 
-	private Consumer<String> lineHandler;
+	private Consumer<ChatMessage> lineHandler;
 
-	public TwitchChatReader(BufferedReader reader, Consumer<String> lineHandler) {
+	public TwitchChatReader(BufferedReader reader, Consumer<ChatMessage> lineHandler) {
 		this.reader = reader;
 		this.lineHandler = lineHandler;
 	}
@@ -23,13 +23,17 @@ public class TwitchChatReader implements Runnable {
 	@Override
 	public void run() {
 		String line;
+		TwitchMessageParser parser = new TwitchMessageParser();
 		try {
 			while ((line = reader.readLine()) != null) {
-				lineHandler.accept(line);
+				if (line.contains("PRIVMSG")) {
+					ChatMessage message = parser.parse(line);
+					lineHandler.accept(message);
+				}
+				LOG.info(line);
 			}
 		} catch (IOException e) {
 			LOG.error("Error reading twitch api", e);
 		}
 	}
-
 }
