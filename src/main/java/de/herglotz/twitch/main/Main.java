@@ -10,9 +10,8 @@ public class Main {
 
 	public static void main(String[] args) throws InvalidPropertiesFileException {
 		CredentialProvider provider = new FileCredentialProvider(new File("credentials.properties"));
-		System.out.println(provider.getBotUsername());
-		System.out.println(provider.getApiClientId());
-		System.out.println(provider.getOAuthToken());
+		TwitchApiFacade twitchApi = new TwitchApiFacade(provider);
+		twitchApi.connect();
 	}
 
 }
