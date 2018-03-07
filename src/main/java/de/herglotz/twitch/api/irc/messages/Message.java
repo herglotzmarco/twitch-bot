@@ -1,5 +1,7 @@
 package de.herglotz.twitch.api.irc.messages;
 
+import de.herglotz.twitch.events.Event;
+
 public abstract class Message {
 
 	private String message;
@@ -11,6 +13,8 @@ public abstract class Message {
 	public String getMessage() {
 		return message;
 	}
+
+	public abstract Event toEvent();
 
 	@Override
 	public int hashCode() {

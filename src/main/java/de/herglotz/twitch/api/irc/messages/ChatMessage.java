@@ -1,9 +1,8 @@
 package de.herglotz.twitch.api.irc.messages;
 
-/**
- * @author hergl
- *
- */
+import de.herglotz.twitch.events.ChatMessageEvent;
+import de.herglotz.twitch.events.Event;
+
 public class ChatMessage extends Message {
 
 	private String username;
@@ -21,6 +20,11 @@ public class ChatMessage extends Message {
 
 	public String getTargetChannel() {
 		return this.targetChannel;
+	}
+
+	@Override
+	public Event toEvent() {
+		return new ChatMessageEvent(this);
 	}
 
 	@Override

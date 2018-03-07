@@ -2,12 +2,12 @@ package de.herglotz.twitch.api.irc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.api.irc.messages.Message;
+import de.herglotz.twitch.events.EventBus;
 
 public class TwitchChatReader implements Runnable {
 
@@ -15,11 +15,8 @@ public class TwitchChatReader implements Runnable {
 
 	private BufferedReader reader;
 
-	private Consumer<Message> lineHandler;
-
-	public TwitchChatReader(BufferedReader reader, Consumer<Message> lineHandler) {
+	public TwitchChatReader(BufferedReader reader) {
 		this.reader = reader;
-		this.lineHandler = lineHandler;
 	}
 
 	@Override
@@ -29,7 +26,7 @@ public class TwitchChatReader implements Runnable {
 		try {
 			while ((line = reader.readLine()) != null) {
 				Message message = parser.parse(line);
-				lineHandler.accept(message);
+				EventBus.instance().fireEvent(message.toEvent());
 			}
 		} catch (IOException e) {
 			LOG.error("Error reading twitch api", e);
