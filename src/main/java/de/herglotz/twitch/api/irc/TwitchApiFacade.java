@@ -10,14 +10,9 @@ import java.nio.charset.Charset;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.herglotz.twitch.credentials.CredentialProvider;
 
 public class TwitchApiFacade {
-
-	private static final Logger LOG = LoggerFactory.getLogger(TwitchApiFacade.class);
 
 	private static final String TWITCH_API_ADRESS = "irc.chat.twitch.tv";
 	private static final int TWITCH_API_PORT = 443;
@@ -52,7 +47,6 @@ public class TwitchApiFacade {
 			writer.flush();
 
 			new Thread(twitchChatReader).start();
-
 		} catch (IOException e) {
 			System.exit(1);
 		}

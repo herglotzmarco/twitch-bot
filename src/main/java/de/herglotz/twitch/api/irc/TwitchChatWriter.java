@@ -9,8 +9,8 @@ import de.herglotz.twitch.events.PingMessageEvent;
 
 public class TwitchChatWriter implements EventListener {
 
-	private static final String TWITCH_API_MSG = "PRIVMSG #%s :%s";
-	private static final String TWITCH_API_PONG = "PONG :tmi.twitch.tv";
+	protected static final String TWITCH_API_MSG = "PRIVMSG #%s :%s";
+	protected static final String TWITCH_API_PONG = "PONG :tmi.twitch.tv";
 
 	private PrintWriter writer;
 

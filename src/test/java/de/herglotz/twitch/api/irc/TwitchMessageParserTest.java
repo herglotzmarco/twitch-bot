@@ -18,7 +18,7 @@ public class TwitchMessageParserTest {
 	private static final String TARGET_CHANNEL = "thisIsTheTargetChannel";
 	private static final String TEST_MESSAGE = "this is a test message";
 
-	private static final String PRVMSG_FORMAT = ":%s!%s@%s.tmi.twitch.tv PRIVMSG #%s :%s";
+	protected static final String PRVMSG_FORMAT = ":%s!%s@%s.tmi.twitch.tv PRIVMSG #%s :%s";
 
 	private TwitchMessageParser parser;
 	private String message;
