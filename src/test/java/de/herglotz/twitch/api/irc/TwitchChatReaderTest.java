@@ -10,11 +10,10 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 
 import de.herglotz.twitch.events.ChatMessageEvent;
-import de.herglotz.twitch.events.Event;
+import de.herglotz.twitch.events.CountingEventListener;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.MessageEvent;
 import de.herglotz.twitch.events.PingMessageEvent;
-import de.herglotz.twitch.events.listeners.EventListener;
 
 public class TwitchChatReaderTest {
 
@@ -30,7 +29,7 @@ public class TwitchChatReaderTest {
 		EventBus.instance().register(listener);
 		reader.run();
 
-		assertEquals(1, listener.counter);
+		assertEquals(1, listener.getCounter());
 	}
 
 	@Test
@@ -41,7 +40,7 @@ public class TwitchChatReaderTest {
 		EventBus.instance().register(listener);
 		reader.run();
 
-		assertEquals(2, listener.counter);
+		assertEquals(2, listener.getCounter());
 	}
 
 	@Test
@@ -54,8 +53,8 @@ public class TwitchChatReaderTest {
 		EventBus.instance().register(rawListener);
 		reader.run();
 
-		assertEquals(1, pingListener.counter);
-		assertEquals(1, rawListener.counter);
+		assertEquals(1, pingListener.getCounter());
+		assertEquals(1, rawListener.getCounter());
 	}
 
 	@Test
@@ -67,7 +66,7 @@ public class TwitchChatReaderTest {
 		EventBus.instance().register(listener);
 
 		reader.run();
-		assertEquals(1, listener.counter);
+		assertEquals(1, listener.getCounter());
 	}
 
 	private TwitchChatReader setupReader(String message) {
@@ -76,25 +75,6 @@ public class TwitchChatReaderTest {
 		TwitchChatReader reader = new TwitchChatReader(
 				new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8"))));
 		return reader;
-	}
-
-	private class CountingEventListener implements EventListener {
-
-		private Class<? extends Event> expected;
-		private int counter;
-
-		public CountingEventListener(Class<? extends Event> expected) {
-			this.expected = expected;
-			this.counter = 0;
-		}
-
-		@Override
-		public void handleEvent(Event event) {
-			if (expected.equals(event.getClass())) {
-				counter++;
-			}
-		}
-
 	}
 
 }

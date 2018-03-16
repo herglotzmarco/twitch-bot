@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
 import de.herglotz.twitch.api.irc.TwitchChatWriter;
@@ -19,11 +20,13 @@ public class HiCommandTest {
 
 	@Test
 	public void testHiMessage() throws Exception {
-		HiCommand command = new HiCommand();
+		HiCommand command = Mockito.spy(HiCommand.class);
+		Mockito.when(command.pickRandomMessage()).thenReturn("Hello World");
+
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		command.run(new TwitchChatWriter(new PrintWriter(output)),
 				new CommandMessage("user", "channel", "!hi", new ArrayList<>()));
-		assertArrayEquals((TwitchChatMessageFormatter.format("channel", HiCommand.REPLY) + "\r\n")
+		assertArrayEquals((TwitchChatMessageFormatter.format("channel", "Hello World") + "\r\n")
 				.getBytes(Charset.forName("UTF-8")), output.toByteArray());
 	}
 
