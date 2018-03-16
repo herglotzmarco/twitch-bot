@@ -25,15 +25,14 @@ public class TwitchMessageParserTest {
 	private static final String COMMAND = "!command";
 	private static final String PARAMETERS = "This is a command";
 
-	protected static final String PRVMSG_FORMAT = ":%s!%s@%s.tmi.twitch.tv PRIVMSG #%s :%s";
-
 	private TwitchMessageParser parser;
 	private String message;
 
 	@Before
 	public void init() {
 		parser = new TwitchMessageParser();
-		message = String.format(PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL, TEST_MESSAGE);
+		message = String.format(TwitchConstants.PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL,
+				TEST_MESSAGE);
 	}
 
 	@Test
@@ -71,13 +70,13 @@ public class TwitchMessageParserTest {
 
 	@Test
 	public void testThatPingMessageGetsParsed() throws Exception {
-		Message parsed = parser.parse(TwitchMessageParser.TWITCH_API_PING);
+		Message parsed = parser.parse(TwitchConstants.TWITCH_API_PING);
 		assertEquals(PingMessage.class, parsed.getClass());
 	}
 
 	@Test
 	public void testThatCommandGetsParsed() throws Exception {
-		String command = String.format(PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL,
+		String command = String.format(TwitchConstants.PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL,
 				COMMAND + " " + PARAMETERS);
 		Message parsed = parser.parse(command);
 		assertEquals(CommandMessage.class, parsed.getClass());
@@ -87,7 +86,8 @@ public class TwitchMessageParserTest {
 
 	@Test
 	public void testCommandWithoutParameters() throws Exception {
-		String command = String.format(PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL, COMMAND);
+		String command = String.format(TwitchConstants.PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL,
+				COMMAND);
 		Message parsed = parser.parse(command);
 		assertEquals(CommandMessage.class, parsed.getClass());
 		assertEquals(COMMAND, ((CommandMessage) parsed).getCommand());

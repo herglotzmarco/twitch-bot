@@ -14,14 +14,11 @@ import de.herglotz.twitch.api.irc.messages.RawMessage;
 
 public class TwitchMessageParser {
 
-	private static final String PRVMSG_FORMAT = ":(.*)!.*@.*.tmi.twitch.tv PRIVMSG #(.*) :(.*)";
-	protected static final String TWITCH_API_PING = "PING :tmi.twitch.tv";
-
 	public Message parse(String line) {
-		if (TWITCH_API_PING.equals(line)) {
+		if (TwitchConstants.TWITCH_API_PING.equals(line)) {
 			return new PingMessage(line);
 		}
-		Pattern pattern = Pattern.compile(PRVMSG_FORMAT);
+		Pattern pattern = Pattern.compile(TwitchConstants.PRVMSG_REGEX);
 		Matcher matcher = pattern.matcher(line);
 		if (!matcher.matches()) {
 			return new RawMessage(line);

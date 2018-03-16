@@ -24,7 +24,7 @@ public class TwitchChatReaderTest {
 
 	@Test
 	public void testThatPingEventIsThrownOnce() throws Exception {
-		TwitchChatReader reader = setupReader(TwitchMessageParser.TWITCH_API_PING);
+		TwitchChatReader reader = setupReader(TwitchConstants.TWITCH_API_PING);
 
 		CountingEventListener listener = new CountingEventListener(PingMessageEvent.class);
 		EventBus.instance().register(listener);
@@ -35,8 +35,7 @@ public class TwitchChatReaderTest {
 
 	@Test
 	public void testThatPingEventIsThrownMultipleTimes() throws Exception {
-		TwitchChatReader reader = setupReader(
-				TwitchMessageParser.TWITCH_API_PING + "\n" + TwitchMessageParser.TWITCH_API_PING);
+		TwitchChatReader reader = setupReader(TwitchConstants.TWITCH_API_PING + "\n" + TwitchConstants.TWITCH_API_PING);
 
 		CountingEventListener listener = new CountingEventListener(PingMessageEvent.class);
 		EventBus.instance().register(listener);
@@ -47,7 +46,7 @@ public class TwitchChatReaderTest {
 
 	@Test
 	public void testThatMultipleEventsAreThrown() throws Exception {
-		TwitchChatReader reader = setupReader(TwitchMessageParser.TWITCH_API_PING + "\nThis is some message");
+		TwitchChatReader reader = setupReader(TwitchConstants.TWITCH_API_PING + "\nThis is some message");
 
 		CountingEventListener pingListener = new CountingEventListener(PingMessageEvent.class);
 		EventBus.instance().register(pingListener);
@@ -61,8 +60,8 @@ public class TwitchChatReaderTest {
 
 	@Test
 	public void testThatMessageEventIsThrown() throws Exception {
-		String message = String.format(TwitchMessageParserTest.PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME,
-				TARGET_CHANNEL, TEST_MESSAGE);
+		String message = String.format(TwitchConstants.PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL,
+				TEST_MESSAGE);
 		TwitchChatReader reader = setupReader(message);
 		CountingEventListener listener = new CountingEventListener(ChatMessageEvent.class);
 		EventBus.instance().register(listener);

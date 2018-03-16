@@ -9,9 +9,6 @@ import de.herglotz.twitch.events.listeners.EventListener;
 
 public class TwitchChatWriter implements EventListener {
 
-	protected static final String TWITCH_API_MSG = "PRIVMSG #%s :%s";
-	protected static final String TWITCH_API_PONG = "PONG :tmi.twitch.tv";
-
 	private PrintWriter writer;
 
 	public TwitchChatWriter(PrintWriter writer) {
@@ -25,14 +22,14 @@ public class TwitchChatWriter implements EventListener {
 	}
 
 	public void sendChatMessage(String targetChannel, String message) {
-		writer.println(String.format(TWITCH_API_MSG, targetChannel, message));
+		writer.println(TwitchChatMessageFormatter.format(targetChannel, message));
 		writer.flush();
 	}
 
 	@Override
 	public void handleEvent(Event event) {
 		if (event instanceof PingMessageEvent) {
-			sendRawMessage(TWITCH_API_PONG);
+			sendRawMessage(TwitchConstants.TWITCH_API_PONG);
 		}
 	}
 

@@ -17,15 +17,6 @@ import de.herglotz.twitch.events.listeners.MessageLogger;
 
 public class TwitchApiFacade {
 
-	private static final String TWITCH_API_ADRESS = "irc.chat.twitch.tv";
-	private static final int TWITCH_API_PORT = 443;
-
-	private static final String TWITCH_API_OAUTH = "PASS oauth:%s";
-	private static final String TWITCH_API_NICK = "NICK %s";
-	private static final String TWITCH_API_JOIN = "JOIN #%s";
-	private static final String TWITCH_API_REQCOMMANDS = "CAP REQ :twitch.tv/commands";
-	private static final String TWITCH_API_REQTAGS = "CAP REQ :twitch.tv/tags";
-
 	private static TwitchApiFacade instance;
 
 	private TwitchChatWriter twitchChatWriter;
@@ -46,7 +37,8 @@ public class TwitchApiFacade {
 			throw new AlreadyConnectedException();
 		try {
 			registerListeners();
-			Socket twitchApi = SSLSocketFactory.getDefault().createSocket(TWITCH_API_ADRESS, TWITCH_API_PORT);
+			Socket twitchApi = SSLSocketFactory.getDefault().createSocket(TwitchConstants.TWITCH_API_ADRESS,
+					TwitchConstants.TWITCH_API_PORT);
 			PrintWriter writer = new PrintWriter(
 					new OutputStreamWriter(twitchApi.getOutputStream(), Charset.forName("UTF-8")));
 			BufferedReader reader = new BufferedReader(
@@ -55,10 +47,10 @@ public class TwitchApiFacade {
 			new Thread(new TwitchChatReader(reader)).start();
 			twitchChatWriter = new TwitchChatWriter(writer);
 
-			writer.println(String.format(TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
-			writer.println(String.format(TWITCH_API_NICK, credentialProvider.getBotUsername()));
-			writer.println(TWITCH_API_REQCOMMANDS);
-			writer.println(String.format(TWITCH_API_JOIN, "flitzpiepe96"));
+			writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
+			writer.println(String.format(TwitchConstants.TWITCH_API_NICK, credentialProvider.getBotUsername()));
+			writer.println(TwitchConstants.TWITCH_API_REQCOMMANDS);
+			writer.println(String.format(TwitchConstants.TWITCH_API_JOIN, "flitzpiepe96"));
 			writer.flush();
 
 			connected = true;
