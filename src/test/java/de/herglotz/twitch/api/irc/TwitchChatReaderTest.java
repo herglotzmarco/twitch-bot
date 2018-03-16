@@ -12,9 +12,9 @@ import org.junit.Test;
 import de.herglotz.twitch.events.ChatMessageEvent;
 import de.herglotz.twitch.events.Event;
 import de.herglotz.twitch.events.EventBus;
-import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.events.MessageEvent;
 import de.herglotz.twitch.events.PingMessageEvent;
+import de.herglotz.twitch.events.listeners.EventListener;
 
 public class TwitchChatReaderTest {
 

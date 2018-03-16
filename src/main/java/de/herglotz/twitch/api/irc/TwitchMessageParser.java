@@ -1,9 +1,13 @@
 package de.herglotz.twitch.api.irc;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.herglotz.twitch.api.irc.messages.ChatMessage;
+import de.herglotz.twitch.api.irc.messages.CommandMessage;
 import de.herglotz.twitch.api.irc.messages.Message;
 import de.herglotz.twitch.api.irc.messages.PingMessage;
 import de.herglotz.twitch.api.irc.messages.RawMessage;
@@ -22,7 +26,21 @@ public class TwitchMessageParser {
 		if (!matcher.matches()) {
 			return new RawMessage(line);
 		}
-		return new ChatMessage(matcher.group(1), matcher.group(2), matcher.group(3));
+		String message = matcher.group(3);
+		if (message.startsWith(CommandMessage.COMMAND_PREFIX)) {
+			return parseCommand(matcher.group(1), matcher.group(2), message);
+		}
+		return new ChatMessage(matcher.group(1), matcher.group(2), message);
+	}
+
+	private Message parseCommand(String username, String targetChannel, String message) {
+		StringTokenizer tokenizer = new StringTokenizer(message, " ");
+		String command = tokenizer.nextToken();
+		List<String> parameters = new ArrayList<>();
+		while (tokenizer.hasMoreTokens()) {
+			parameters.add(tokenizer.nextToken());
+		}
+		return new CommandMessage(username, targetChannel, command, parameters);
 	}
 
 }

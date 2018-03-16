@@ -13,6 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.events.listeners.MessageLogger;
 
 public class TwitchApiFacade {
 
@@ -44,7 +45,7 @@ public class TwitchApiFacade {
 		if (connected)
 			throw new AlreadyConnectedException();
 		try {
-			EventBus.instance().register(new MessageLogger());
+			registerListeners();
 			Socket twitchApi = SSLSocketFactory.getDefault().createSocket(TWITCH_API_ADRESS, TWITCH_API_PORT);
 			PrintWriter writer = new PrintWriter(
 					new OutputStreamWriter(twitchApi.getOutputStream(), Charset.forName("UTF-8")));
@@ -64,6 +65,10 @@ public class TwitchApiFacade {
 		} catch (IOException e) {
 			System.exit(1);
 		}
+	}
+
+	private void registerListeners() {
+		EventBus.instance().register(new MessageLogger());
 	}
 
 	public TwitchChatWriter getWriter() {

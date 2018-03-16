@@ -1,10 +1,9 @@
-package de.herglotz.twitch.api.irc;
+package de.herglotz.twitch.events.listeners;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.events.Event;
-import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.events.MessageEvent;
 
 public class MessageLogger implements EventListener {

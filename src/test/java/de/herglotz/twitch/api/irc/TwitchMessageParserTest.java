@@ -3,10 +3,15 @@ package de.herglotz.twitch.api.irc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 import de.herglotz.twitch.api.irc.messages.ChatMessage;
+import de.herglotz.twitch.api.irc.messages.CommandMessage;
 import de.herglotz.twitch.api.irc.messages.Message;
 import de.herglotz.twitch.api.irc.messages.PingMessage;
 import de.herglotz.twitch.api.irc.messages.RawMessage;
@@ -17,6 +22,8 @@ public class TwitchMessageParserTest {
 	private static final String USERNAME = "someUsername";
 	private static final String TARGET_CHANNEL = "thisIsTheTargetChannel";
 	private static final String TEST_MESSAGE = "this is a test message";
+	private static final String COMMAND = "!command";
+	private static final String PARAMETERS = "This is a command";
 
 	protected static final String PRVMSG_FORMAT = ":%s!%s@%s.tmi.twitch.tv PRIVMSG #%s :%s";
 
@@ -66,5 +73,24 @@ public class TwitchMessageParserTest {
 	public void testThatPingMessageGetsParsed() throws Exception {
 		Message parsed = parser.parse(TwitchMessageParser.TWITCH_API_PING);
 		assertEquals(PingMessage.class, parsed.getClass());
+	}
+
+	@Test
+	public void testThatCommandGetsParsed() throws Exception {
+		String command = String.format(PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL,
+				COMMAND + " " + PARAMETERS);
+		Message parsed = parser.parse(command);
+		assertEquals(CommandMessage.class, parsed.getClass());
+		assertEquals(COMMAND, ((CommandMessage) parsed).getCommand());
+		assertEquals(Lists.newArrayList(PARAMETERS.split(" ")), ((CommandMessage) parsed).getParameters());
+	}
+
+	@Test
+	public void testCommandWithoutParameters() throws Exception {
+		String command = String.format(PRVMSG_FORMAT, USERNAME, USERNAME, USERNAME, TARGET_CHANNEL, COMMAND);
+		Message parsed = parser.parse(command);
+		assertEquals(CommandMessage.class, parsed.getClass());
+		assertEquals(COMMAND, ((CommandMessage) parsed).getCommand());
+		assertEquals(new ArrayList<>(), ((CommandMessage) parsed).getParameters());
 	}
 }

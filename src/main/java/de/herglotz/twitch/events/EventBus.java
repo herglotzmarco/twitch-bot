@@ -3,6 +3,8 @@ package de.herglotz.twitch.events;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.herglotz.twitch.events.listeners.EventListener;
+
 public class EventBus {
 
 	private static EventBus instance;

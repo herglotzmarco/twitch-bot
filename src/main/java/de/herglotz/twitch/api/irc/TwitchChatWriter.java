@@ -4,8 +4,8 @@ import java.io.PrintWriter;
 
 import de.herglotz.twitch.events.Event;
 import de.herglotz.twitch.events.EventBus;
-import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.events.PingMessageEvent;
+import de.herglotz.twitch.events.listeners.EventListener;
 
 public class TwitchChatWriter implements EventListener {
 
