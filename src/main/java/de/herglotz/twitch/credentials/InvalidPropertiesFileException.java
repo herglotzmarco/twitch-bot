@@ -8,8 +8,4 @@ public class InvalidPropertiesFileException extends Exception {
 		super(message, throwable);
 	}
 
-	public InvalidPropertiesFileException(String message) {
-		super(message);
-	}
-
 }

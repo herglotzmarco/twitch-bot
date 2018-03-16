@@ -13,6 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.events.listeners.CommandHandler;
 import de.herglotz.twitch.events.listeners.MessageLogger;
 
 public class TwitchApiFacade {
@@ -61,6 +62,7 @@ public class TwitchApiFacade {
 
 	private void registerListeners() {
 		EventBus.instance().register(new MessageLogger());
+		EventBus.instance().register(new CommandHandler());
 	}
 
 	public TwitchChatWriter getWriter() {
