@@ -2,7 +2,7 @@ package de.herglotz.twitch.events;
 
 import de.herglotz.twitch.api.irc.messages.Message;
 
-public class MessageEvent extends Event {
+public class MessageEvent implements Event {
 
 	private Message message;
 

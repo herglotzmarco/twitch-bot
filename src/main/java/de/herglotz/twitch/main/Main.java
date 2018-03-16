@@ -11,8 +11,8 @@ public class Main {
 
 	public static void main(String[] args) throws InvalidPropertiesFileException {
 		CredentialProvider provider = new FileCredentialProvider(new File("credentials.properties"));
-		TwitchApiFacade twitchApi = new TwitchApiFacade(provider);
-		twitchApi.connect();
+		TwitchApiFacade twitchApi = TwitchApiFacade.instance();
+		twitchApi.connect(provider);
 	}
 
 }

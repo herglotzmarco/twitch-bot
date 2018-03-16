@@ -1,5 +1,5 @@
 package de.herglotz.twitch.events;
 
-public abstract class Event {
+public interface Event {
 
 }
