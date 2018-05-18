@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import de.herglotz.twitch.api.irc.TestableWriter;
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
 
@@ -22,7 +23,7 @@ public class HiCommandTest {
 
 		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
 		command.run(writer, new CommandMessage("user", "channel", "hi", new ArrayList<>()));
-		assertEquals((TwitchChatMessageFormatter.format("channel", "Hello World") + "\r\n"), writer.getText());
+		assertEquals((TwitchChatMessageFormatter.format("channel", "Hello World") + System.lineSeparator()), writer.getText());
 	}
 
 	@Test

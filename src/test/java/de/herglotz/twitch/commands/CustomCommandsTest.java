@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import de.herglotz.twitch.api.irc.TestableWriter;
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
 import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
@@ -48,12 +49,14 @@ public class CustomCommandsTest {
 		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
 		CustomCommands commands = new CustomCommands(Sets.newHashSet(discordCommand, otherCommand));
 		commands.run(writer, new CommandMessage("user", "target", "discord", Lists.newArrayList("pls")));
-		assertEquals(TwitchChatMessageFormatter.format("target", "discord was called!\r\n"), writer.getText());
+		assertEquals(TwitchChatMessageFormatter.format("target", "discord was called!" + System.lineSeparator()),
+				writer.getText());
 
 		writer = new TestableWriter(new ByteArrayOutputStream());
 		commands.run(writer, new CommandMessage("user", "target", "other",
 				Lists.newArrayList("something else that does not affect the command")));
-		assertEquals(TwitchChatMessageFormatter.format("target", "other was called!\r\n"), writer.getText());
+		assertEquals(TwitchChatMessageFormatter.format("target", "other was called!" + System.lineSeparator()),
+				writer.getText());
 
 		writer = new TestableWriter(new ByteArrayOutputStream());
 		commands.run(writer, new CommandMessage("user", "target", "something", Lists.newArrayList("")));

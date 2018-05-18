@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.api.irc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;

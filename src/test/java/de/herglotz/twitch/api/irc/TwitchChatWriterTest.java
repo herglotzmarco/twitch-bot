@@ -1,10 +1,9 @@
 package de.herglotz.twitch.api.irc;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 
 import org.junit.Test;
 
@@ -20,8 +19,7 @@ public class TwitchChatWriterTest {
 		TwitchChatWriter writer = new TwitchChatWriter(new PrintWriter(output, true));
 
 		writer.handleEvent(new PingMessage("").toEvent());
-		assertArrayEquals((TwitchConstants.TWITCH_API_PONG + "\r\n").getBytes(Charset.forName("UTF-8")),
-				output.toByteArray());
+		assertEquals(TwitchConstants.TWITCH_API_PONG + System.lineSeparator(), new String(output.toByteArray()));
 	}
 
 	@Test
@@ -30,8 +28,7 @@ public class TwitchChatWriterTest {
 		new TwitchChatWriter(new PrintWriter(output, true));
 
 		EventBus.instance().fireEvent(new PingMessage("").toEvent());
-		assertArrayEquals((TwitchConstants.TWITCH_API_PONG + "\r\n").getBytes(Charset.forName("UTF-8")),
-				output.toByteArray());
+		assertEquals(TwitchConstants.TWITCH_API_PONG + System.lineSeparator(), new String(output.toByteArray()));
 	}
 
 	@Test
@@ -41,7 +38,7 @@ public class TwitchChatWriterTest {
 
 		String message = "This is a raw message";
 		writer.sendRawMessage(message);
-		assertArrayEquals((message + "\r\n").getBytes(Charset.forName("UTF-8")), output.toByteArray());
+		assertEquals(message + System.lineSeparator(), new String(output.toByteArray()));
 	}
 
 	@Test
@@ -52,9 +49,8 @@ public class TwitchChatWriterTest {
 		String message = "This is a chat message";
 		String channel = "someChannel";
 		writer.sendChatMessage(channel, message);
-		assertArrayEquals(
-				(TwitchChatMessageFormatter.format(channel, message) + "\r\n").getBytes(Charset.forName("UTF-8")),
-				output.toByteArray());
+		assertEquals(TwitchChatMessageFormatter.format(channel, message) + System.lineSeparator(),
+				new String(output.toByteArray()));
 	}
 
 	@Test
@@ -63,7 +59,7 @@ public class TwitchChatWriterTest {
 		TwitchChatWriter writer = new TwitchChatWriter(new PrintWriter(output, true));
 
 		writer.handleEvent(new RawMessage("something").toEvent());
-		assertArrayEquals(("").getBytes(Charset.forName("UTF-8")), output.toByteArray());
+		assertEquals("", new String(output.toByteArray()));
 	}
 
 }
