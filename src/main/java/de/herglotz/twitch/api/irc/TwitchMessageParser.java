@@ -31,7 +31,7 @@ public class TwitchMessageParser {
 	}
 
 	private Message parseCommand(String username, String targetChannel, String message) {
-		StringTokenizer tokenizer = new StringTokenizer(message, " ");
+		StringTokenizer tokenizer = new StringTokenizer(message.substring(1), " ");
 		String command = tokenizer.nextToken();
 		List<String> parameters = new ArrayList<>();
 		while (tokenizer.hasMoreTokens()) {

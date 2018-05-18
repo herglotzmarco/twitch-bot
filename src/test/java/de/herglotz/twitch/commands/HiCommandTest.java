@@ -25,7 +25,7 @@ public class HiCommandTest {
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		command.run(new TwitchChatWriter(new PrintWriter(output)),
-				new CommandMessage("user", "channel", "!hi", new ArrayList<>()));
+				new CommandMessage("user", "channel", "hi", new ArrayList<>()));
 		assertArrayEquals((TwitchChatMessageFormatter.format("channel", "Hello World") + "\r\n")
 				.getBytes(Charset.forName("UTF-8")), output.toByteArray());
 	}
@@ -33,13 +33,13 @@ public class HiCommandTest {
 	@Test
 	public void testCheckForCorrectCommandText() throws Exception {
 		HiCommand command = new HiCommand();
-		assertTrue(command.isResponsible("!hi"));
+		assertTrue(command.isResponsible("hi"));
 	}
 
 	@Test
 	public void testCheckForIncorrectCommandText() throws Exception {
 		HiCommand command = new HiCommand();
-		assertFalse(command.isResponsible("!somethingElse"));
+		assertFalse(command.isResponsible("somethingElse"));
 	}
 
 	@Test

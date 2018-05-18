@@ -33,7 +33,7 @@ public class HiCommand implements Command {
 
 	@Override
 	public boolean isResponsible(String commandMessage) {
-		return commandMessage.equals("!hi");
+		return commandMessage.equals("hi");
 	}
 
 	private void loadReplies() {

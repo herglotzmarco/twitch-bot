@@ -16,21 +16,21 @@ public class CommandHandlerTest {
 	@Test
 	public void testThatCommandGetsCalled() throws Exception {
 		CommandHandler handler = new CommandHandler();
-		TestCommand testCommand = new TestCommand("!test");
+		TestCommand testCommand = new TestCommand("test");
 		handler.register(testCommand);
-		handler.handleEvent(new CommandMessage("user", "channel", "!test", new ArrayList<>()).toEvent());
+		handler.handleEvent(new CommandMessage("user", "channel", "test", new ArrayList<>()).toEvent());
 		assertTrue(testCommand.called);
 	}
 
 	@Test
 	public void testThatCorrectCommandIsCalled() throws Exception {
 		CommandHandler handler = new CommandHandler();
-		TestCommand correctCommand = new TestCommand("!test");
-		TestCommand wrongCommand = new TestCommand("!somethingElse");
+		TestCommand correctCommand = new TestCommand("test");
+		TestCommand wrongCommand = new TestCommand("somethingElse");
 		handler.register(correctCommand);
 		handler.register(wrongCommand);
 
-		handler.handleEvent(new CommandMessage("user", "channel", "!test", new ArrayList<>()).toEvent());
+		handler.handleEvent(new CommandMessage("user", "channel", "test", new ArrayList<>()).toEvent());
 		assertTrue(correctCommand.called);
 		assertFalse(wrongCommand.called);
 	}

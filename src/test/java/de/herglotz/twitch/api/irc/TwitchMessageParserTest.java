@@ -80,7 +80,7 @@ public class TwitchMessageParserTest {
 				COMMAND + " " + PARAMETERS);
 		Message parsed = parser.parse(command);
 		assertEquals(CommandMessage.class, parsed.getClass());
-		assertEquals(COMMAND, ((CommandMessage) parsed).getCommand());
+		assertEquals(COMMAND.substring(1), ((CommandMessage) parsed).getCommand());
 		assertEquals(Lists.newArrayList(PARAMETERS.split(" ")), ((CommandMessage) parsed).getParameters());
 	}
 
@@ -90,7 +90,7 @@ public class TwitchMessageParserTest {
 				COMMAND);
 		Message parsed = parser.parse(command);
 		assertEquals(CommandMessage.class, parsed.getClass());
-		assertEquals(COMMAND, ((CommandMessage) parsed).getCommand());
+		assertEquals(COMMAND.substring(1), ((CommandMessage) parsed).getCommand());
 		assertEquals(new ArrayList<>(), ((CommandMessage) parsed).getParameters());
 	}
 }
