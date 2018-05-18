@@ -1,19 +1,16 @@
 package de.herglotz.twitch.commands;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
-import de.herglotz.twitch.api.irc.TwitchChatWriter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
 
 public class HiCommandTest {
@@ -23,11 +20,9 @@ public class HiCommandTest {
 		HiCommand command = Mockito.spy(HiCommand.class);
 		Mockito.when(command.pickRandomMessage()).thenReturn("Hello World");
 
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		command.run(new TwitchChatWriter(new PrintWriter(output)),
-				new CommandMessage("user", "channel", "hi", new ArrayList<>()));
-		assertArrayEquals((TwitchChatMessageFormatter.format("channel", "Hello World") + "\r\n")
-				.getBytes(Charset.forName("UTF-8")), output.toByteArray());
+		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
+		command.run(writer, new CommandMessage("user", "channel", "hi", new ArrayList<>()));
+		assertEquals((TwitchChatMessageFormatter.format("channel", "Hello World") + "\r\n"), writer.getText());
 	}
 
 	@Test
@@ -45,10 +40,9 @@ public class HiCommandTest {
 	@Test
 	public void testThatCommandDoesNotRunIfNotCorrectMessage() throws Exception {
 		HiCommand command = new HiCommand();
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		command.run(new TwitchChatWriter(new PrintWriter(output)),
-				new CommandMessage("user", "channel", "!somethingElse", new ArrayList<>()));
-		assertArrayEquals("".getBytes(Charset.forName("UTF-8")), output.toByteArray());
+		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
+		command.run(writer, new CommandMessage("user", "channel", "!somethingElse", new ArrayList<>()));
+		assertEquals("", writer.getText());
 	}
 
 }
