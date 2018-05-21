@@ -63,4 +63,15 @@ public class CustomCommandsTest {
 		assertEquals("", writer.getText());
 	}
 
+	@Test
+	public void testCommandParserIsUsed() throws Exception {
+		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
+		discordCommand.setMessage("@<user>: Discord was called!");
+		CustomCommands commands = new CustomCommands(Sets.newHashSet(discordCommand));
+		commands.run(writer, new CommandMessage("username", "target", "discord", Lists.newArrayList("pls")));
+		assertEquals(
+				TwitchChatMessageFormatter.format("target", "@username: Discord was called!" + System.lineSeparator()),
+				writer.getText());
+	}
+
 }

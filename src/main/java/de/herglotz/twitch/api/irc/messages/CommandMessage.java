@@ -31,4 +31,8 @@ public class CommandMessage extends ChatMessage {
 		return parameters;
 	}
 
+	public String user() {
+		return getUsername();
+	}
+
 }
