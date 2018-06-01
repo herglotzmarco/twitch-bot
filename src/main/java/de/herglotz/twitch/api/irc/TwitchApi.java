@@ -15,6 +15,7 @@ import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.listeners.CommandHandler;
 import de.herglotz.twitch.events.listeners.MessageLogger;
+import de.herglotz.twitch.persistence.IDatabase;
 
 public abstract class TwitchApi {
 
@@ -33,12 +34,12 @@ public abstract class TwitchApi {
 		connected = false;
 	}
 
-	public void connect(CredentialProvider credentialProvider) {
+	public void connect(CredentialProvider credentialProvider, IDatabase database) {
 		Preconditions.checkNotNull(credentialProvider);
 		if (connected)
 			throw new AlreadyConnectedException();
 
-		registerListeners();
+		registerListeners(database);
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), Charset.forName("UTF-8")));
 		BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(), Charset.forName("UTF-8")));
 
@@ -54,9 +55,9 @@ public abstract class TwitchApi {
 		connected = true;
 	}
 
-	protected void registerListeners() {
+	protected void registerListeners(IDatabase database) {
 		EventBus.instance().register(new MessageLogger());
-		EventBus.instance().register(new CommandHandler());
+		EventBus.instance().register(new CommandHandler(database));
 	}
 
 	public TwitchChatWriter getWriter() {

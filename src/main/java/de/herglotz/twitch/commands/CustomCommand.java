@@ -12,8 +12,9 @@ public class CustomCommand {
 		message = entity.getMessage();
 	}
 
-	public void run(TwitchChatWriter writer, CommandMessage commandMessage, CustomCommandParser parser) {
-		writer.sendChatMessage(commandMessage.getTargetChannel(), parser.parse(message, commandMessage));
+	public void run(TwitchChatWriter writer, CommandMessage commandMessage) {
+		writer.sendChatMessage(commandMessage.getTargetChannel(),
+				new CustomCommandParser().parse(message, commandMessage));
 	}
 
 }

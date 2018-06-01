@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.herglotz.twitch.credentials.FileCredentialProvider;
+import de.herglotz.twitch.persistence.TestableDatabase;
 
 public class TwitchApiTest {
 
@@ -32,20 +33,20 @@ public class TwitchApiTest {
 	@Test(expected = AlreadyConnectedException.class)
 	public void testThatConnectionDoesNotWorkTwice() throws Exception {
 		TwitchApi instance = new TestableTwitchApi();
-		instance.connect(new FileCredentialProvider(file));
-		instance.connect(new FileCredentialProvider(file));
+		instance.connect(new FileCredentialProvider(file), new TestableDatabase());
+		instance.connect(new FileCredentialProvider(file), new TestableDatabase());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testThatCredentialProviderMightNotBeNull() throws Exception {
 		TwitchApi instance = new TestableTwitchApi();
-		instance.connect(null);
+		instance.connect(null, new TestableDatabase());
 	}
 
 	@Test
 	public void testHandshakeProtocol() throws Exception {
 		TwitchApi instance = new TestableTwitchApi();
-		instance.connect(new FileCredentialProvider(file));
+		instance.connect(new FileCredentialProvider(file), new TestableDatabase());
 
 		String written = new String(((ByteArrayOutputStream) instance.getOutputStream()).toByteArray());
 		List<String> lines = new BufferedReader(new StringReader(written)).lines().collect(Collectors.toList());

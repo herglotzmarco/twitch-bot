@@ -27,7 +27,7 @@ public class CustomCommands implements Command {
 	public void run(TwitchChatWriter writer, CommandMessage commandMessage) {
 		CustomCommand command = commandMap.get(commandMessage.getCommand());
 		if (command != null) {
-			command.run(writer, commandMessage, new CustomCommandParser());
+			command.run(writer, commandMessage);
 		}
 	}
 

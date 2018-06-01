@@ -15,7 +15,7 @@ public class DatabaseTest {
 
 	@Before
 	public void init() {
-		undertest = new Database("testing");
+		undertest = Database.testInstance();
 	}
 
 	@Test
@@ -50,6 +50,24 @@ public class DatabaseTest {
 
 		result = undertest.findAll(CustomCommandEntity.class);
 		assertEquals(2, result.size());
+	}
+
+	@Test
+	public void testDeletingEntities() throws Exception {
+		List<CustomCommandEntity> result = undertest.findAll(CustomCommandEntity.class);
+		assertEquals(0, result.size());
+
+		CustomCommandEntity entity = new CustomCommandEntity();
+		entity.setCommand("test");
+		entity.setMessage("more test");
+		undertest.persist(entity);
+
+		result = undertest.findAll(CustomCommandEntity.class);
+		assertEquals(1, result.size());
+
+		undertest.delete(entity);
+		result = undertest.findAll(CustomCommandEntity.class);
+		assertEquals(0, result.size());
 	}
 
 }

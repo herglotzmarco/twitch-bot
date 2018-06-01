@@ -5,11 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
-
-public class Database {
+public class Database implements IDatabase {
 
 	private static Database instance;
 
@@ -21,18 +17,30 @@ public class Database {
 		return instance;
 	}
 
-	@VisibleForTesting
-	Database(String persistenceUnit) {
+	public static Database testInstance() {
+		return new Database("testing");
+	}
+
+	private Database(String persistenceUnit) {
 		entityManager = Persistence.createEntityManagerFactory(persistenceUnit).createEntityManager();
 	}
 
+	@Override
 	public <T> List<T> findAll(Class<T> clazz) {
 		return entityManager.createQuery("SELECT x from " + clazz.getSimpleName() + " x", clazz).getResultList();
 	}
 
-	public void persist(CustomCommandEntity entity) {
+	@Override
+	public void persist(Object entity) {
 		entityManager.getTransaction().begin();
 		entityManager.persist(entity);
+		entityManager.getTransaction().commit();
+	}
+
+	@Override
+	public void delete(Object entity) {
+		entityManager.getTransaction().begin();
+		entityManager.remove(entity);
 		entityManager.getTransaction().commit();
 	}
 
