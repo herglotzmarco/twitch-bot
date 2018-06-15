@@ -17,7 +17,7 @@ public class CommandHandlerTest {
 
 	@Test
 	public void testThatCommandGetsCalled() throws Exception {
-		CommandHandler handler = new CommandHandler(new TestableDatabase());
+		CommandHandler handler = new CommandHandler(new TestableDatabase(), 1000);
 		TestCommand testCommand = new TestCommand("test");
 		handler.register(testCommand);
 		handler.handleEvent(new CommandMessage("user", "channel", "test", new ArrayList<>()).toEvent());
@@ -26,7 +26,7 @@ public class CommandHandlerTest {
 
 	@Test
 	public void testThatCorrectCommandIsCalled() throws Exception {
-		CommandHandler handler = new CommandHandler(new TestableDatabase());
+		CommandHandler handler = new CommandHandler(new TestableDatabase(), 1000);
 		TestCommand correctCommand = new TestCommand("test");
 		TestCommand wrongCommand = new TestCommand("somethingElse");
 		handler.register(correctCommand);
@@ -46,7 +46,7 @@ public class CommandHandlerTest {
 		entity.setTimeInSeconds(1);
 		database.persist(entity);
 
-		CommandHandler handler = new CommandHandler(database);
+		CommandHandler handler = new CommandHandler(database, 1000);
 		TestCommand correctCommand = new TestCommand("test");
 		handler.register(correctCommand);
 
@@ -61,7 +61,7 @@ public class CommandHandlerTest {
 
 	@Test
 	public void testAddTimedCommand() throws Exception {
-		CommandHandler handler = new CommandHandler(new TestableDatabase());
+		CommandHandler handler = new CommandHandler(new TestableDatabase(), 1000);
 		TestCommand correctCommand = new TestCommand("test");
 		handler.register(correctCommand);
 
@@ -75,7 +75,7 @@ public class CommandHandlerTest {
 
 	@Test
 	public void testRemoveCommand() throws Exception {
-		CommandHandler handler = new CommandHandler(new TestableDatabase());
+		CommandHandler handler = new CommandHandler(new TestableDatabase(), 1000);
 		TestCommand correctCommand = new TestCommand("test");
 		handler.register(correctCommand);
 

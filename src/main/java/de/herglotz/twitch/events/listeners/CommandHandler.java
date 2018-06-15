@@ -29,9 +29,15 @@ public class CommandHandler implements EventListener {
 	private Set<Command> commands;
 	private Set<TimedCommandEntity> timedCommands;
 	private Database database;
+	private int maxDelay;
 
 	public CommandHandler(Database database) {
+		this(database, MAX_DELAY);
+	}
+
+	public CommandHandler(Database database, int maxDelay) {
 		this.database = database;
+		this.maxDelay = maxDelay;
 		commands = new HashSet<>();
 		register(new HiCommand());
 		register(new CustomCommands(database.findAll(CustomCommandEntity.class)));
@@ -58,7 +64,7 @@ public class CommandHandler implements EventListener {
 				if (!getTimedCommands().contains(command))
 					timer.cancel();
 			}
-		}, new Random().nextInt(MAX_DELAY), command.getTimeInSeconds() * 1000L);
+		}, new Random().nextInt(maxDelay), command.getTimeInSeconds() * 1000L);
 	}
 
 	private Set<TimedCommandEntity> getTimedCommands() {
