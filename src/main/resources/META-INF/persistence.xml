@@ -6,6 +6,7 @@
 
 		<class>de.herglotz.twitch.persistence.entities.CustomCommandEntity</class>
 		<class>de.herglotz.twitch.persistence.entities.TimedCommandEntity</class>
+		<class>de.herglotz.twitch.persistence.entities.CounterCommandEntity</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="false" />
