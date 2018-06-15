@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class TestableDatabase implements IDatabase {
+public class TestableDatabase implements Database {
 
 	private Set<Object> data;
 

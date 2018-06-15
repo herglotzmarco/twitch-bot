@@ -9,13 +9,13 @@ import org.junit.Test;
 
 import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
 
-public class DatabaseTest {
+public class H2DatabaseTest {
 
-	private Database undertest;
+	private H2Database undertest;
 
 	@Before
 	public void init() {
-		undertest = Database.testInstance();
+		undertest = H2Database.testInstance();
 	}
 
 	@Test

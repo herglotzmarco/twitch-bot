@@ -12,11 +12,12 @@ import com.google.common.collect.Sets;
 import de.herglotz.twitch.api.irc.TwitchApi;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
 import de.herglotz.twitch.commands.Command;
+import de.herglotz.twitch.commands.CounterCommand;
 import de.herglotz.twitch.commands.CustomCommands;
 import de.herglotz.twitch.commands.HiCommand;
 import de.herglotz.twitch.events.CommandMessageEvent;
 import de.herglotz.twitch.events.Event;
-import de.herglotz.twitch.persistence.IDatabase;
+import de.herglotz.twitch.persistence.Database;
 import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
 import de.herglotz.twitch.persistence.entities.TimedCommandEntity;
 
@@ -27,13 +28,14 @@ public class CommandHandler implements EventListener {
 
 	private Set<Command> commands;
 	private Set<TimedCommandEntity> timedCommands;
-	private IDatabase database;
+	private Database database;
 
-	public CommandHandler(IDatabase database) {
+	public CommandHandler(Database database) {
 		this.database = database;
 		commands = new HashSet<>();
 		register(new HiCommand());
 		register(new CustomCommands(database.findAll(CustomCommandEntity.class)));
+		register(new CounterCommand(database));
 
 		timedCommands = Sets.newHashSet(database.findAll(TimedCommandEntity.class));
 		startTimedCommands();

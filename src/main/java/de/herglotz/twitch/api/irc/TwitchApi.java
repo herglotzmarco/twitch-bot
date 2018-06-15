@@ -15,7 +15,7 @@ import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.listeners.CommandHandler;
 import de.herglotz.twitch.events.listeners.MessageLogger;
-import de.herglotz.twitch.persistence.IDatabase;
+import de.herglotz.twitch.persistence.Database;
 
 public abstract class TwitchApi {
 
@@ -34,7 +34,7 @@ public abstract class TwitchApi {
 		connected = false;
 	}
 
-	public void connect(CredentialProvider credentialProvider, IDatabase database) {
+	public void connect(CredentialProvider credentialProvider, Database database) {
 		Preconditions.checkNotNull(credentialProvider);
 		if (connected)
 			throw new AlreadyConnectedException();
@@ -55,7 +55,7 @@ public abstract class TwitchApi {
 		connected = true;
 	}
 
-	protected void registerListeners(IDatabase database) {
+	protected void registerListeners(Database database) {
 		EventBus.instance().register(new MessageLogger());
 		EventBus.instance().register(new CommandHandler(database));
 	}
