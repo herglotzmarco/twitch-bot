@@ -24,9 +24,15 @@ public class CounterCommand implements Command {
 	private Database database;
 
 	public CounterCommand(Database database) {
+		this(database, true);
+	}
+
+	public CounterCommand(Database database, boolean setupKeylistener) {
 		this.database = database;
 		this.prefix = "death";
-		setupKeylistener();
+		if (setupKeylistener) {
+			setupKeylistener();
+		}
 	}
 
 	@Override

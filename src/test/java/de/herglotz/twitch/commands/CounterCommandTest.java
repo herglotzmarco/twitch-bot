@@ -21,7 +21,7 @@ public class CounterCommandTest {
 
 	@Test
 	public void testGetCommandWorks() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(1));
+		CounterCommand underTest = new CounterCommand(new CounterDatabase(1), false);
 		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
 		assertTrue(underTest.isResponsible("deathctr"));
 		underTest.run(writer, new CommandMessage("", "target", "deathctr", new ArrayList<>()));
@@ -32,7 +32,7 @@ public class CounterCommandTest {
 
 	@Test
 	public void testGetCommandIfNoDatabaseEntry() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(-1));
+		CounterCommand underTest = new CounterCommand(new CounterDatabase(-1), false);
 		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
 		underTest.run(writer, new CommandMessage("", "target", "deathctr", new ArrayList<>()));
 		assertEquals(
@@ -42,7 +42,7 @@ public class CounterCommandTest {
 
 	@Test
 	public void testGetCommandIfMoreText() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(4));
+		CounterCommand underTest = new CounterCommand(new CounterDatabase(4), false);
 		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
 		underTest.run(writer,
 				new CommandMessage("", "target", "deathctr", Lists.newArrayList("some", "thing", "useless")));
