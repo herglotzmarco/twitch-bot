@@ -51,45 +51,6 @@ public class CounterCommandTest {
 				writer.getText());
 	}
 
-	@Test
-	public void testAddCommand() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(2));
-		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
-		underTest.run(writer, new CommandMessage("", "target", "deathctr", Lists.newArrayList("add")));
-		assertEquals(TwitchChatMessageFormatter.format("target",
-				"Der Counter wurde erhöht und steht jetzt bei 3" + System.lineSeparator()), writer.getText());
-	}
-
-	@Test
-	public void testAddCommandIfNoDatabaseEntry() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(-1));
-		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
-		underTest.run(writer, new CommandMessage("", "target", "deathctr", Lists.newArrayList("+")));
-		assertEquals(TwitchChatMessageFormatter.format("target",
-				"Der Counter wurde erhöht und steht jetzt bei 1" + System.lineSeparator()), writer.getText());
-	}
-
-	@Test
-	public void testSubCommand() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(2));
-		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
-		underTest.run(writer, new CommandMessage("", "target", "deathctr", Lists.newArrayList("sub")));
-		assertEquals(
-				TwitchChatMessageFormatter.format("target",
-						"Der Counter wurde erniedrigt und steht jetzt bei 1" + System.lineSeparator()),
-				writer.getText());
-	}
-
-	@Test
-	public void testSubCommandIfNoDatabaseEntry() throws Exception {
-		CounterCommand underTest = new CounterCommand(new CounterDatabase(-1));
-		TestableWriter writer = new TestableWriter(new ByteArrayOutputStream());
-		underTest.run(writer, new CommandMessage("", "target", "deathctr", Lists.newArrayList("-")));
-		assertEquals(
-				TwitchChatMessageFormatter.format("target", "Der Counter steht bereits bei 0" + System.lineSeparator()),
-				writer.getText());
-	}
-
 	private class CounterDatabase implements Database {
 		private int i;
 

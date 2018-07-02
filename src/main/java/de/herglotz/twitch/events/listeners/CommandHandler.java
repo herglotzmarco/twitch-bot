@@ -23,7 +23,7 @@ import de.herglotz.twitch.persistence.entities.TimedCommandEntity;
 
 public class CommandHandler implements EventListener {
 
-	private static final int MAX_DELAY = 300000;
+	private static final int MAX_DELAY = 1200000;
 	private static final Object MUTEX = new Object();
 
 	private Set<Command> commands;

@@ -1,7 +1,14 @@
 package de.herglotz.twitch.commands;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 
 import de.herglotz.twitch.api.irc.TwitchChatWriter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
@@ -10,10 +17,7 @@ import de.herglotz.twitch.persistence.entities.CounterCommandEntity;
 
 public class CounterCommand implements Command {
 
-	private static final String NO_REDUCE_MESSAGE = "Der Counter steht bereits bei 0";
 	private static final String GET_MESSAGE = "Der Counter steht aktuell bei %s";
-	private static final String SUB_MESSAGE = "Der Counter wurde erniedrigt und steht jetzt bei %s";
-	private static final String ADD_MESSAGE = "Der Counter wurde erhöht und steht jetzt bei %s";
 
 	private String prefix;
 
@@ -22,43 +26,46 @@ public class CounterCommand implements Command {
 	public CounterCommand(Database database) {
 		this.database = database;
 		this.prefix = "death";
+		setupKeylistener();
 	}
 
 	@Override
 	public void run(TwitchChatWriter writer, CommandMessage commandMessage) {
-		if (commandMessage.getParameters().isEmpty()) {
-			runGetCommand(writer, commandMessage);
-		} else if (commandMessage.getParameters().get(0).equals("+")
-				|| commandMessage.getParameters().get(0).equals("add")) {
-			runAddCommand(writer, commandMessage);
-		} else if (commandMessage.getParameters().get(0).equals("-")
-				|| commandMessage.getParameters().get(0).equals("sub")) {
-			runSubCommand(writer, commandMessage);
-		} else {
-			runGetCommand(writer, commandMessage);
+		writer.sendChatMessage(commandMessage.getTargetChannel(), String.format(GET_MESSAGE, findValue()));
+	}
+
+	private void setupKeylistener() {
+		try {
+			GlobalScreen.registerNativeHook();
+			LogManager.getLogManager().getLogger("org.jnativehook").setLevel(Level.OFF);
+			GlobalScreen.addNativeKeyListener(new CounterKeyListener(this::runAddCommand, this::runSubCommand));
+		} catch (NativeHookException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private void runAddCommand(TwitchChatWriter writer, CommandMessage commandMessage) {
+	private void runAddCommand() {
 		CounterCommandEntity entity = findOrCreateEntity();
 		entity.increaseCounter();
 		database.persist(entity);
-		writer.sendChatMessage(commandMessage.getTargetChannel(), String.format(ADD_MESSAGE, entity.getCounter()));
+		updateFile(entity.getCounter());
 	}
 
-	private void runSubCommand(TwitchChatWriter writer, CommandMessage commandMessage) {
+	private void runSubCommand() {
 		CounterCommandEntity entity = findOrCreateEntity();
-		if (entity.getCounter() == 0) {
-			writer.sendChatMessage(commandMessage.getTargetChannel(), NO_REDUCE_MESSAGE);
-		} else {
+		if (entity.getCounter() > 0) {
 			entity.decreaseCounter();
 			database.persist(entity);
-			writer.sendChatMessage(commandMessage.getTargetChannel(), String.format(SUB_MESSAGE, entity.getCounter()));
+			updateFile(entity.getCounter());
 		}
 	}
 
-	private void runGetCommand(TwitchChatWriter writer, CommandMessage commandMessage) {
-		writer.sendChatMessage(commandMessage.getTargetChannel(), String.format(GET_MESSAGE, findValue()));
+	private void updateFile(int counter) {
+		try (FileWriter writer = new FileWriter("D:\\Videos\\Stream\\Bot Counter\\" + prefix + "ctr.txt", false)) {
+			writer.write("" + counter);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private int findValue() {
