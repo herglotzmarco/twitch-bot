@@ -26,6 +26,7 @@ public class TwitchMessageParser {
 		}
 		String message = matcher.group(3);
 		if (message.startsWith(CommandMessage.COMMAND_PREFIX)) {
+			// TODO Move command parsing to command module
 			return parseCommand(matcher.group(1), matcher.group(2), message);
 		}
 		return new ChatMessage(matcher.group(1), matcher.group(2), message);

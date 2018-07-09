@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.commands.custom;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.commands.custom.CustomCommandParser;
 
 public class CustomCommandParserTest {
 

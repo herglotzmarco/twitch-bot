@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.commands.custom;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

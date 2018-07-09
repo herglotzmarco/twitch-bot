@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.commands.counter;
 
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
@@ -18,10 +18,12 @@ public class CounterKeyListener implements NativeKeyListener {
 
 	@Override
 	public void nativeKeyTyped(NativeKeyEvent event) {
+		// not needed
 	}
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent event) {
+		// not needed
 	}
 
 	@Override

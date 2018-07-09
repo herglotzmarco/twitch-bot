@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.commands.custom;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;

@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.commands.custom;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,6 +15,7 @@ import com.google.common.collect.Sets;
 import de.herglotz.twitch.api.irc.TestableWriter;
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.commands.custom.CustomCommands;
 import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
 
 public class CustomCommandsTest {

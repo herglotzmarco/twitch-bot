@@ -38,13 +38,14 @@ public abstract class TwitchApi {
 
 	public void connect(CredentialProvider credentialProvider, Database database) {
 		Preconditions.checkNotNull(credentialProvider);
-		if (connected)
+		if (connected) {
 			throw new AlreadyConnectedException();
+		}
 
 		PrintWriter writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), Charset.forName("UTF-8")));
 		BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(), Charset.forName("UTF-8")));
 
-		new Thread(new TwitchChatReader(reader)).start();
+		TwitchChatReader.start(reader);
 		TwitchChatWriter twitchChatWriter = new TwitchChatWriter(writer);
 
 		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
@@ -54,11 +55,11 @@ public abstract class TwitchApi {
 		writer.flush();
 
 		connected = true;
-		registerListeners(database, twitchChatWriter);
+		EventBus.instance().register(new MessageLogger());
+		startModules(database, twitchChatWriter);
 	}
 
-	protected void registerListeners(Database database, TwitchChatWriter writer) {
-		EventBus.instance().register(new MessageLogger());
+	private void startModules(Database database, TwitchChatWriter writer) {
 		findModules().forEach(m -> m.startup(database, writer));
 	}
 

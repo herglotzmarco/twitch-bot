@@ -3,6 +3,7 @@ package de.herglotz.twitch.api.irc.messages;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.herglotz.twitch.events.CommandMessageEvent;
 import de.herglotz.twitch.events.Event;
 
 public class CommandMessage extends ChatMessage {

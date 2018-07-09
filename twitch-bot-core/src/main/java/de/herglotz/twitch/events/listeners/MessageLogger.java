@@ -13,8 +13,9 @@ public class MessageLogger implements EventListener {
 
 	@Override
 	public void handleEvent(Event event) {
-		if (event instanceof MessageEvent)
+		if (event instanceof MessageEvent) {
 			LOG.info(((MessageEvent) event).getMessage().toString());
+		}
 	}
 
 }

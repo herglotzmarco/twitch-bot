@@ -1,4 +1,4 @@
-package de.herglotz.twitch.commands;
+package de.herglotz.twitch.commands.custom;
 
 import java.util.Collection;
 import java.util.Map;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.commands.Command;
 import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
 
 public class CustomCommands implements Command {

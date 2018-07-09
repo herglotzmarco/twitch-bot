@@ -32,4 +32,9 @@ public class TwitchChatReader implements Runnable {
 			LOG.error("Error reading twitch api", e);
 		}
 	}
+
+	public static void start(BufferedReader reader) {
+		TwitchChatReader twitchChatReader = new TwitchChatReader(reader);
+		new Thread(twitchChatReader).start();
+	}
 }

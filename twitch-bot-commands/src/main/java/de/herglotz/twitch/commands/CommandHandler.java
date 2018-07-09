@@ -11,7 +11,9 @@ import com.google.common.collect.Sets;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
 import de.herglotz.twitch.api.irc.messages.CommandMessage;
-import de.herglotz.twitch.api.irc.messages.CommandMessageEvent;
+import de.herglotz.twitch.commands.counter.CounterCommand;
+import de.herglotz.twitch.commands.custom.CustomCommands;
+import de.herglotz.twitch.events.CommandMessageEvent;
 import de.herglotz.twitch.events.Event;
 import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.persistence.Database;
