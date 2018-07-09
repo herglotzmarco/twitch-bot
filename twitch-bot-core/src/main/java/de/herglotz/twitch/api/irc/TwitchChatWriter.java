@@ -4,10 +4,11 @@ import java.io.PrintWriter;
 
 import de.herglotz.twitch.events.Event;
 import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.events.PingMessageEvent;
-import de.herglotz.twitch.events.listeners.EventListener;
+import de.herglotz.twitch.events.TwitchConstants;
 
-public class TwitchChatWriter implements EventListener {
+public class TwitchChatWriter implements ITwitchChatWriter, EventListener {
 
 	private PrintWriter writer;
 
@@ -16,11 +17,13 @@ public class TwitchChatWriter implements EventListener {
 		EventBus.instance().register(this);
 	}
 
+	@Override
 	public void sendRawMessage(String message) {
 		writer.println(message);
 		writer.flush();
 	}
 
+	@Override
 	public void sendChatMessage(String targetChannel, String message) {
 		writer.println(TwitchChatMessageFormatter.format(targetChannel, message));
 		writer.flush();

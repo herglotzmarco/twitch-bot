@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.events.Event;
+import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.events.MessageEvent;
 
 public class MessageLogger implements EventListener {

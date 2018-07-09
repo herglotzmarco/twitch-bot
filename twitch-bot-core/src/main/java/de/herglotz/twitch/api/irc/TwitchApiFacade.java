@@ -7,6 +7,8 @@ import java.net.Socket;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import de.herglotz.twitch.events.TwitchConstants;
+
 public class TwitchApiFacade extends TwitchApi {
 
 	private OutputStream outputStream;

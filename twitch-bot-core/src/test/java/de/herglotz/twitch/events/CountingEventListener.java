@@ -1,7 +1,5 @@
 package de.herglotz.twitch.events;
 
-import de.herglotz.twitch.events.listeners.EventListener;
-
 public class CountingEventListener implements EventListener {
 
 	private Class<? extends Event> expected;

@@ -19,6 +19,24 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
+	<dependencies>
+
+		<!-- Utils -->
+		<dependency>
+			<groupId>com.1stleg</groupId>
+			<artifactId>jnativehook</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+
+		<!-- Persistence -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.11.Final</version>
+		</dependency>
+
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>

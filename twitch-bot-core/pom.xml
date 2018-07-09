@@ -36,48 +36,11 @@
 
 		<!-- Persistence -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.2.11.Final</version>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.196</version>
 		</dependency>
 
-		<!-- Utils -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.1stleg</groupId>
-			<artifactId>jnativehook</artifactId>
-			<version>2.1.0</version>
-		</dependency>
-
-		<!-- Logging -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
-		<!-- Testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>2.8.9</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>

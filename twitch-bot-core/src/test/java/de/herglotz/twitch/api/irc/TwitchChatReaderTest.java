@@ -14,6 +14,7 @@ import de.herglotz.twitch.events.CountingEventListener;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.MessageEvent;
 import de.herglotz.twitch.events.PingMessageEvent;
+import de.herglotz.twitch.events.TwitchConstants;
 
 public class TwitchChatReaderTest {
 

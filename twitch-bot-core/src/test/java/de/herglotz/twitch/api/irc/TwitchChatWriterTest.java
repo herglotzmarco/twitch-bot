@@ -10,6 +10,7 @@ import org.junit.Test;
 import de.herglotz.twitch.api.irc.messages.PingMessage;
 import de.herglotz.twitch.api.irc.messages.RawMessage;
 import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.events.TwitchConstants;
 
 public class TwitchChatWriterTest {
 
