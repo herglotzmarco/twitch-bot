@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 
 import de.herglotz.twitch.events.ChatMessageEvent;
-import de.herglotz.twitch.events.CountingEventListener;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.MessageEvent;
 import de.herglotz.twitch.events.PingMessageEvent;
