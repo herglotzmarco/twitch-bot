@@ -7,21 +7,9 @@ import javax.persistence.Persistence;
 
 public class H2Database implements Database {
 
-	private static H2Database instance;
-
 	private EntityManager entityManager;
 
-	public static H2Database instance() {
-		if (instance == null)
-			instance = new H2Database("production");
-		return instance;
-	}
-
-	public static H2Database testInstance() {
-		return new H2Database("testing");
-	}
-
-	private H2Database(String persistenceUnit) {
+	public H2Database(String persistenceUnit) {
 		entityManager = Persistence.createEntityManagerFactory(persistenceUnit).createEntityManager();
 	}
 

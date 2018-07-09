@@ -15,7 +15,7 @@ public class H2DatabaseTest {
 
 	@Before
 	public void init() {
-		undertest = H2Database.testInstance();
+		undertest = new H2Database("testing");
 	}
 
 	@Test

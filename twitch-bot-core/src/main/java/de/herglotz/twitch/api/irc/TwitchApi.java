@@ -8,6 +8,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
@@ -15,23 +23,16 @@ import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.events.listeners.MessageLogger;
-import de.herglotz.twitch.module.CommandModule;
+import de.herglotz.twitch.module.IModule;
 import de.herglotz.twitch.persistence.Database;
 
 public abstract class TwitchApi {
 
-	private static TwitchApi instance;
+	private static final Logger LOG = LoggerFactory.getLogger(TwitchApi.class);
 
-	private TwitchChatWriter twitchChatWriter;
 	private boolean connected;
 
-	public static TwitchApi instance() {
-		if (instance == null)
-			instance = new TwitchApiFacade();
-		return instance;
-	}
-
-	protected TwitchApi() {
+	public TwitchApi() {
 		connected = false;
 	}
 
@@ -44,7 +45,7 @@ public abstract class TwitchApi {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(), Charset.forName("UTF-8")));
 
 		new Thread(new TwitchChatReader(reader)).start();
-		twitchChatWriter = new TwitchChatWriter(writer);
+		TwitchChatWriter twitchChatWriter = new TwitchChatWriter(writer);
 
 		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
 		writer.println(String.format(TwitchConstants.TWITCH_API_NICK, credentialProvider.getBotUsername()));
@@ -58,11 +59,22 @@ public abstract class TwitchApi {
 
 	protected void registerListeners(Database database, TwitchChatWriter writer) {
 		EventBus.instance().register(new MessageLogger());
-		new CommandModule().startup(database, writer);
+		findModules().forEach(m -> m.startup(database, writer));
 	}
 
-	public TwitchChatWriter getWriter() {
-		return twitchChatWriter;
+	private List<IModule> findModules() {
+		Reflections reflections = new Reflections(
+				new ConfigurationBuilder().setExpandSuperTypes(false).forPackages("de.herglotz.twitch"));
+		Set<Class<? extends IModule>> classes = reflections.getSubTypesOf(IModule.class);
+		List<IModule> modules = new ArrayList<>();
+		for (Class<? extends IModule> clazz : classes) {
+			try {
+				modules.add(clazz.newInstance());
+			} catch (InstantiationException | IllegalAccessException e) {
+				LOG.error("Failed to instantiate module {}", clazz.getName(), e);
+			}
+		}
+		return modules;
 	}
 
 	protected abstract InputStream getInputStream();
