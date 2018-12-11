@@ -20,17 +20,22 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import de.herglotz.twitch.credentials.CredentialProvider;
+import de.herglotz.twitch.events.Event;
 import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.events.EventListener;
+import de.herglotz.twitch.events.PingMessageEvent;
 import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.events.listeners.MessageLogger;
 import de.herglotz.twitch.module.IModule;
 import de.herglotz.twitch.persistence.Database;
 
-public abstract class TwitchApi {
+public abstract class TwitchApi implements EventListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitchApi.class);
 
 	private boolean connected;
+
+	private TwitchChatWriter twitchChatWriter;
 
 	public TwitchApi() {
 		connected = false;
@@ -46,7 +51,7 @@ public abstract class TwitchApi {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(), Charset.forName("UTF-8")));
 
 		TwitchChatReader.start(reader);
-		TwitchChatWriter twitchChatWriter = new TwitchChatWriter(writer);
+		twitchChatWriter = new TwitchChatWriter(writer);
 
 		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
 		writer.println(String.format(TwitchConstants.TWITCH_API_NICK, credentialProvider.getBotUsername()));
@@ -56,11 +61,23 @@ public abstract class TwitchApi {
 
 		connected = true;
 		EventBus.instance().register(new MessageLogger());
+		EventBus.instance().register(this);
 		startModules(database, twitchChatWriter);
 	}
 
+	@Override
+	public void handleEvent(Event event) {
+		if (event instanceof PingMessageEvent) {
+			twitchChatWriter.sendRawMessage(TwitchConstants.TWITCH_API_PONG);
+		}
+	}
+
 	private void startModules(Database database, TwitchChatWriter writer) {
-		findModules().forEach(m -> m.startup(database, writer));
+		for (IModule module : findModules()) {
+			LOG.info("Starting module {}", module.getId());
+			module.startup(database, writer);
+			LOG.info("Module {} started", module.getId());
+		}
 	}
 
 	private List<IModule> findModules() {

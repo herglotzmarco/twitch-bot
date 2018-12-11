@@ -28,7 +28,7 @@ public class CounterCommand implements Command {
 		this.database = database;
 		this.prefix = "death";
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-			// setupKeylistener();
+			setupKeylistener();
 		}
 	}
 

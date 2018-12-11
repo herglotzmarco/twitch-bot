@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.herglotz.twitch.api.irc.messages.PingMessage;
 import de.herglotz.twitch.credentials.FileCredentialProvider;
+import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.persistence.TestableDatabase;
 
 public class TwitchApiTest {
@@ -54,6 +57,37 @@ public class TwitchApiTest {
 		assertEquals("NICK myUsername", lines.get(1));
 		assertEquals("CAP REQ :twitch.tv/commands", lines.get(2));
 		assertEquals("JOIN #flitzpiepe96", lines.get(3));
+	}
+
+	@Test
+	public void testWritingPongMessages() throws Exception {
+		TwitchApi instance = new TestableTwitchApi();
+		instance.connect(new FileCredentialProvider(file), new TestableDatabase());
+		instance.handleEvent(new PingMessage("").toEvent());
+
+		String written = new String(((ByteArrayOutputStream) instance.getOutputStream()).toByteArray());
+		List<String> lines = new BufferedReader(new StringReader(written)).lines().collect(Collectors.toList());
+		assertEquals("PASS oauth:someToken", lines.get(0));
+		assertEquals("NICK myUsername", lines.get(1));
+		assertEquals("CAP REQ :twitch.tv/commands", lines.get(2));
+		assertEquals("JOIN #flitzpiepe96", lines.get(3));
+		assertEquals(TwitchConstants.TWITCH_API_PONG, lines.get(4));
+	}
+
+	@Test
+	public void testListeningToEventBus() throws Exception {
+		TwitchApi instance = new TestableTwitchApi();
+		instance.connect(new FileCredentialProvider(file), new TestableDatabase());
+		EventBus.instance().fireEvent(new PingMessage("").toEvent());
+
+		String written = new String(((ByteArrayOutputStream) instance.getOutputStream()).toByteArray());
+		List<String> lines = new BufferedReader(new StringReader(written)).lines().collect(Collectors.toList());
+		assertEquals("PASS oauth:someToken", lines.get(0));
+		assertEquals("NICK myUsername", lines.get(1));
+		assertEquals("CAP REQ :twitch.tv/commands", lines.get(2));
+		assertEquals("JOIN #flitzpiepe96", lines.get(3));
+		assertEquals(TwitchConstants.TWITCH_API_PONG, lines.get(4));
+
 	}
 
 	private class TestableTwitchApi extends TwitchApi {

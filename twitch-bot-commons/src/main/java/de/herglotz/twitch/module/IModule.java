@@ -7,4 +7,6 @@ public interface IModule {
 
 	void startup(Database database, ITwitchChatWriter writer);
 
+	String getId();
+
 }

@@ -12,4 +12,9 @@ public class CommandModule implements IModule {
 		EventBus.instance().register(new CommandHandler(database, writer));
 	}
 
+	@Override
+	public String getId() {
+		return CommandModule.class.getName();
+	}
+
 }
