@@ -1,4 +1,4 @@
-package de.herglotz.twitch.api.irc.messages;
+package de.herglotz.twitch.messages;
 
 import de.herglotz.twitch.events.ChatMessageEvent;
 import de.herglotz.twitch.events.Event;

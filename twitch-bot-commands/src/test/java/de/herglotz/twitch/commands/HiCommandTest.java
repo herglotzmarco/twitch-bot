@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 
 import de.herglotz.twitch.api.irc.TestableWriter;
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 
 public class HiCommandTest {
 

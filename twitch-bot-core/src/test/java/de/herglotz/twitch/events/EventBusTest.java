@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.herglotz.twitch.api.irc.messages.PingMessage;
+import de.herglotz.twitch.messages.PingMessage;
 
 public class EventBusTest {
 

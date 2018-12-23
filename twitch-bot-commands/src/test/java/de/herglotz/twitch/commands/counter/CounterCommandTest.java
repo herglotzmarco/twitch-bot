@@ -13,7 +13,7 @@ import com.google.common.collect.Lists;
 
 import de.herglotz.twitch.api.irc.TestableWriter;
 import de.herglotz.twitch.api.irc.TwitchChatMessageFormatter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 import de.herglotz.twitch.commands.counter.CounterCommand;
 import de.herglotz.twitch.persistence.Database;
 import de.herglotz.twitch.persistence.entities.CounterCommandEntity;

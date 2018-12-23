@@ -8,12 +8,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +24,7 @@ import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.events.listeners.MessageLogger;
 import de.herglotz.twitch.module.IModule;
 import de.herglotz.twitch.persistence.Database;
+import de.herglotz.twitch.utils.ExtensionLoader;
 
 public abstract class TwitchApi implements EventListener {
 
@@ -80,19 +77,8 @@ public abstract class TwitchApi implements EventListener {
 		}
 	}
 
-	private List<IModule> findModules() {
-		Reflections reflections = new Reflections(
-				new ConfigurationBuilder().setExpandSuperTypes(false).forPackages("de.herglotz.twitch"));
-		Set<Class<? extends IModule>> classes = reflections.getSubTypesOf(IModule.class);
-		List<IModule> modules = new ArrayList<>();
-		for (Class<? extends IModule> clazz : classes) {
-			try {
-				modules.add(clazz.newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
-				LOG.error("Failed to instantiate module {}", clazz.getName(), e);
-			}
-		}
-		return modules;
+	private Collection<IModule> findModules() {
+		return ExtensionLoader.loadExtensions(IModule.class, "de.herglotz.twitch");
 	}
 
 	protected abstract InputStream getInputStream();

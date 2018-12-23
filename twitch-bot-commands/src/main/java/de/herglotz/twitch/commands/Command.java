@@ -1,7 +1,7 @@
 package de.herglotz.twitch.commands;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 
 public interface Command {
 

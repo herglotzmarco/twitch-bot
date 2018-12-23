@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 import de.herglotz.twitch.commands.Command;
 import de.herglotz.twitch.persistence.entities.CustomCommandEntity;
 

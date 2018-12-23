@@ -1,6 +1,6 @@
 package de.herglotz.twitch.events;
 
-import de.herglotz.twitch.api.irc.messages.ChatMessage;
+import de.herglotz.twitch.messages.ChatMessage;
 
 public class ChatMessageEvent extends MessageEvent {
 

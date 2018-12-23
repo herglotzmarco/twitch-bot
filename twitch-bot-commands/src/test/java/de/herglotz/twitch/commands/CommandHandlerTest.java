@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
 import de.herglotz.twitch.api.irc.TestableWriter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 import de.herglotz.twitch.persistence.TestableDatabase;
 import de.herglotz.twitch.persistence.entities.TimedCommandEntity;
 

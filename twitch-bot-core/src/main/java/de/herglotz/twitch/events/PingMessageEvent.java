@@ -1,6 +1,6 @@
 package de.herglotz.twitch.events;
 
-import de.herglotz.twitch.api.irc.messages.Message;
+import de.herglotz.twitch.messages.Message;
 
 public class PingMessageEvent extends MessageEvent {
 

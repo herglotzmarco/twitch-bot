@@ -1,4 +1,4 @@
-package de.herglotz.twitch.api.irc.messages;
+package de.herglotz.twitch.messages;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +13,8 @@ public class CommandMessage extends ChatMessage {
 	private List<String> parameters;
 
 	public CommandMessage(String username, String targetChannel, String command, List<String> parameters) {
-		super(username, targetChannel, command + " " + parameters.stream().collect(Collectors.joining(" ")));
+		super(username, targetChannel,
+				COMMAND_PREFIX + command + " " + parameters.stream().collect(Collectors.joining(" ")));
 		this.command = command;
 		this.parameters = parameters;
 	}

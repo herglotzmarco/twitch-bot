@@ -6,8 +6,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.api.irc.messages.Message;
 import de.herglotz.twitch.events.EventBus;
+import de.herglotz.twitch.messages.Message;
+import de.herglotz.twitch.parsing.TwitchMessageParser;
 
 public class TwitchChatReader implements Runnable {
 

@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.herglotz.twitch.api.irc.messages.PingMessage;
 import de.herglotz.twitch.credentials.FileCredentialProvider;
 import de.herglotz.twitch.events.EventBus;
 import de.herglotz.twitch.events.TwitchConstants;
+import de.herglotz.twitch.messages.PingMessage;
 import de.herglotz.twitch.persistence.TestableDatabase;
 
 public class TwitchApiTest {

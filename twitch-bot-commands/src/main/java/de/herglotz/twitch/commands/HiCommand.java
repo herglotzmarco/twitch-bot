@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 
 public class HiCommand implements Command {
 

@@ -11,7 +11,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
 import de.herglotz.twitch.api.irc.ITwitchChatWriter;
-import de.herglotz.twitch.api.irc.messages.CommandMessage;
+import de.herglotz.twitch.messages.CommandMessage;
 import de.herglotz.twitch.commands.Command;
 import de.herglotz.twitch.persistence.Database;
 import de.herglotz.twitch.persistence.entities.CounterCommandEntity;

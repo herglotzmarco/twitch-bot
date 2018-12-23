@@ -6,11 +6,11 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.herglotz.twitch.api.irc.messages.ChatMessage;
-import de.herglotz.twitch.api.irc.messages.Message;
-import de.herglotz.twitch.api.irc.messages.PingMessage;
-import de.herglotz.twitch.api.irc.messages.RawMessage;
 import de.herglotz.twitch.events.TwitchConstants;
+import de.herglotz.twitch.messages.ChatMessage;
+import de.herglotz.twitch.messages.Message;
+import de.herglotz.twitch.messages.PingMessage;
+import de.herglotz.twitch.parsing.TwitchMessageParser;
 
 public class TwitchMessageParserTest {
 
@@ -58,7 +58,7 @@ public class TwitchMessageParserTest {
 	@Test
 	public void testThatRawMessageGetsParsed() throws Exception {
 		Message parsed = parser.parse(RAWMSG);
-		assertEquals(RawMessage.class, parsed.getClass());
+		assertEquals(Message.class, parsed.getClass());
 		assertEquals(RAWMSG, parsed.getMessage());
 	}
 
