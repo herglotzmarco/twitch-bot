@@ -1,18 +1,20 @@
 package de.herglotz.twitch.events.listeners;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.events.Event;
-import de.herglotz.twitch.events.EventListener;
 import de.herglotz.twitch.events.MessageEvent;
+import de.herglotz.twitch.events.TwitchEvent;
 
-public class MessageLogger implements EventListener {
+@ApplicationScoped
+public class MessageLogger {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageLogger.class);
 
-	@Override
-	public void handleEvent(Event event) {
+	public void handleEvent(@Observes TwitchEvent event) {
 		if (event instanceof MessageEvent) {
 			LOG.info(((MessageEvent) event).getMessage().toString());
 		}

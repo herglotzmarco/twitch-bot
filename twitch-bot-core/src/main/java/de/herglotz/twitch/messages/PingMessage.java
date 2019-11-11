@@ -1,7 +1,7 @@
 package de.herglotz.twitch.messages;
 
-import de.herglotz.twitch.events.Event;
 import de.herglotz.twitch.events.PingMessageEvent;
+import de.herglotz.twitch.events.TwitchEvent;
 
 public class PingMessage extends Message {
 
@@ -10,7 +10,7 @@ public class PingMessage extends Message {
 	}
 
 	@Override
-	public Event toEvent() {
+	public TwitchEvent toEvent() {
 		return new PingMessageEvent(this);
 	}
 

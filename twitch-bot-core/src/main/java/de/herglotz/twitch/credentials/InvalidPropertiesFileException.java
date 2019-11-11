@@ -1,6 +1,6 @@
 package de.herglotz.twitch.credentials;
 
-public class InvalidPropertiesFileException extends Exception {
+public class InvalidPropertiesFileException extends RuntimeException {
 
 	private static final long serialVersionUID = -8673497280494625382L;
 
