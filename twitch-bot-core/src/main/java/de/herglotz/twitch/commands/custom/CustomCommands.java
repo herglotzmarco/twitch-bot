@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.api.irc.ITwitchChatWriter;
-import de.herglotz.twitch.messages.CommandMessage;
+import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.commands.Command;
+import de.herglotz.twitch.messages.CommandMessage;
 
 public class CustomCommands implements Command {
 
@@ -24,10 +24,10 @@ public class CustomCommands implements Command {
 	}
 
 	@Override
-	public void run(ITwitchChatWriter writer, CommandMessage commandMessage) {
+	public void run(TwitchChat twitch, CommandMessage commandMessage) {
 		CustomCommand command = commandMap.get(commandMessage.getCommand());
 		if (command != null) {
-			command.run(writer, commandMessage);
+			command.run(twitch, commandMessage);
 		}
 	}
 

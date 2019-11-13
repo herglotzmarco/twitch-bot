@@ -1,4 +1,4 @@
-package de.herglotz.twitch.parsing;
+package de.herglotz.twitch.api.irc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,27 +24,26 @@ public class TwitchMessageParser {
 			return new Message(line);
 		}
 		String username = matcher.group(1);
-		String targetChannel = matcher.group(2);
 		String message = matcher.group(3);
 		if (isCommand(message)) {
-			return parseCommand(username, targetChannel, message);
+			return parseCommand(username, message);
 		}
 
-		return new ChatMessage(username, targetChannel, message);
+		return new ChatMessage(username, message);
 	}
 
 	public boolean isCommand(String message) {
 		return message.startsWith(CommandMessage.COMMAND_PREFIX);
 	}
 
-	public Message parseCommand(String username, String targetChannel, String message) {
+	public Message parseCommand(String username, String message) {
 		StringTokenizer tokenizer = new StringTokenizer(message.substring(1), " ");
 		String command = tokenizer.nextToken();
 		List<String> parameters = new ArrayList<>();
 		while (tokenizer.hasMoreTokens()) {
 			parameters.add(tokenizer.nextToken());
 		}
-		return new CommandMessage(username, targetChannel, command, parameters);
+		return new CommandMessage(username, command, parameters);
 	}
 
 }

@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 import com.google.common.collect.Sets;
 
-import de.herglotz.twitch.api.irc.ITwitchChatWriter;
+import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.commands.counter.CounterCommand;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.commands.custom.CustomCommands;
@@ -33,7 +33,7 @@ public class CommandHandler {
 	private Database database;
 
 	@Inject
-	private ITwitchChatWriter writer;
+	private TwitchChat twitch;
 
 	private Set<Command> commands;
 	private Set<TimedCommandEntity> timedCommands;
@@ -70,10 +70,10 @@ public class CommandHandler {
 
 			@Override
 			public void run() {
-				handleEvent(new CommandMessageEvent(
-						new CommandMessage("", command.getTargetChannel(), command.getCommand(), new ArrayList<>())));
-				if (!getTimedCommands().contains(command))
+				handleEvent(new CommandMessageEvent(new CommandMessage("", command.getCommand(), new ArrayList<>())));
+				if (!getTimedCommands().contains(command)) {
 					timer.cancel();
+				}
 			}
 		}, new Random().nextInt(maxDelay), command.getTimeInSeconds() * 1000L);
 	}
@@ -112,7 +112,7 @@ public class CommandHandler {
 		if (event instanceof CommandMessageEvent) {
 			commands.stream()//
 					.filter(c -> c.isResponsible(((CommandMessageEvent) event).getMessage().getCommand()))//
-					.forEach(c -> c.run(writer, ((CommandMessageEvent) event).getMessage()));
+					.forEach(c -> c.run(twitch, ((CommandMessageEvent) event).getMessage()));
 		}
 	}
 

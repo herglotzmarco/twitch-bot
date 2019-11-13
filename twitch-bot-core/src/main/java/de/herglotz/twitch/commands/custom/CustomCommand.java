@@ -1,6 +1,6 @@
 package de.herglotz.twitch.commands.custom;
 
-import de.herglotz.twitch.api.irc.ITwitchChatWriter;
+import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.messages.CommandMessage;
 
 public class CustomCommand {
@@ -11,9 +11,8 @@ public class CustomCommand {
 		message = entity.getMessage();
 	}
 
-	public void run(ITwitchChatWriter writer, CommandMessage commandMessage) {
-		writer.sendChatMessage(commandMessage.getTargetChannel(),
-				new CustomCommandParser().parse(message, commandMessage));
+	public void run(TwitchChat twitch, CommandMessage commandMessage) {
+		twitch.sendChatMessage(new CustomCommandParser().parse(message, commandMessage));
 	}
 
 }

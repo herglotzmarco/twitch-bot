@@ -8,4 +8,9 @@ public class ChatMessageEvent extends MessageEvent {
 		super(chatMessage);
 	}
 
+	@Override
+	public ChatMessage getMessage() {
+		return (ChatMessage) super.getMessage();
+	}
+
 }

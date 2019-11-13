@@ -6,20 +6,14 @@ import de.herglotz.twitch.events.TwitchEvent;
 public class ChatMessage extends Message {
 
 	private String username;
-	private String targetChannel;
 
-	public ChatMessage(String username, String targetChannel, String message) {
+	public ChatMessage(String username, String message) {
 		super(message);
 		this.username = username;
-		this.targetChannel = targetChannel;
 	}
 
 	public String getUsername() {
 		return this.username;
-	}
-
-	public String getTargetChannel() {
-		return this.targetChannel;
 	}
 
 	@Override
@@ -29,7 +23,6 @@ public class ChatMessage extends Message {
 
 	@Override
 	public String toString() {
-		return "ChatMessage [username=" + username + ", targetChannel=" + targetChannel + ", message=" + getMessage()
-				+ "]";
+		return "ChatMessage [username=" + username + ", message=" + getMessage() + "]";
 	}
 }

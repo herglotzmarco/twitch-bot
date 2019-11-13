@@ -10,9 +10,9 @@ import java.util.logging.LogManager;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
-import de.herglotz.twitch.api.irc.ITwitchChatWriter;
-import de.herglotz.twitch.messages.CommandMessage;
+import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.commands.Command;
+import de.herglotz.twitch.messages.CommandMessage;
 import de.herglotz.twitch.persistence.Database;
 
 public class CounterCommand implements Command {
@@ -32,8 +32,8 @@ public class CounterCommand implements Command {
 	}
 
 	@Override
-	public void run(ITwitchChatWriter writer, CommandMessage commandMessage) {
-		writer.sendChatMessage(commandMessage.getTargetChannel(), String.format(GET_MESSAGE, findValue()));
+	public void run(TwitchChat twitch, CommandMessage commandMessage) {
+		twitch.sendChatMessage(String.format(GET_MESSAGE, findValue()));
 	}
 
 	private void setupKeylistener() {

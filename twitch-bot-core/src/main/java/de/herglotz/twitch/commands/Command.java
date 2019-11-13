@@ -1,11 +1,11 @@
 package de.herglotz.twitch.commands;
 
-import de.herglotz.twitch.api.irc.ITwitchChatWriter;
+import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.messages.CommandMessage;
 
 public interface Command {
 
-	void run(ITwitchChatWriter writer, CommandMessage commandMessage);
+	void run(TwitchChat twitch, CommandMessage commandMessage);
 
 	boolean isResponsible(String commandMessage);
 }

@@ -10,7 +10,6 @@ import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.messages.ChatMessage;
 import de.herglotz.twitch.messages.Message;
 import de.herglotz.twitch.messages.PingMessage;
-import de.herglotz.twitch.parsing.TwitchMessageParser;
 
 public class TwitchMessageParserTest {
 
@@ -39,13 +38,6 @@ public class TwitchMessageParserTest {
 		Message parsed = parser.parse(message);
 		assertEquals(ChatMessage.class, parsed.getClass());
 		assertEquals(USERNAME, ((ChatMessage) parsed).getUsername());
-	}
-
-	@Test
-	public void testThatTargetChannelIsParsed() throws Exception {
-		Message parsed = parser.parse(message);
-		assertEquals(ChatMessage.class, parsed.getClass());
-		assertEquals(TARGET_CHANNEL, ((ChatMessage) parsed).getTargetChannel());
 	}
 
 	@Test

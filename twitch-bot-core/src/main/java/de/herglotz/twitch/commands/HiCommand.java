@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import de.herglotz.twitch.api.irc.ITwitchChatWriter;
+import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.messages.CommandMessage;
 
 public class HiCommand implements Command {
@@ -17,11 +17,10 @@ public class HiCommand implements Command {
 	}
 
 	@Override
-	public void run(ITwitchChatWriter writer, CommandMessage commandMessage) {
+	public void run(TwitchChat twitch, CommandMessage commandMessage) {
 		if (isResponsible(commandMessage.getCommand())) {
 			String reply = pickRandomMessage();
-			writer.sendChatMessage(commandMessage.getTargetChannel(),
-					String.format(reply, commandMessage.getUsername()));
+			twitch.sendChatMessage(String.format(reply, commandMessage.getUsername()));
 		}
 	}
 

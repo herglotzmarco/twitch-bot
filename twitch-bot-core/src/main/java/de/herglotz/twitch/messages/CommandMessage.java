@@ -12,9 +12,8 @@ public class CommandMessage extends ChatMessage {
 	private String command;
 	private List<String> parameters;
 
-	public CommandMessage(String username, String targetChannel, String command, List<String> parameters) {
-		super(username, targetChannel,
-				COMMAND_PREFIX + command + " " + parameters.stream().collect(Collectors.joining(" ")));
+	public CommandMessage(String username, String command, List<String> parameters) {
+		super(username, COMMAND_PREFIX + command + " " + parameters.stream().collect(Collectors.joining(" ")));
 		this.command = command;
 		this.parameters = parameters;
 	}
@@ -34,6 +33,11 @@ public class CommandMessage extends ChatMessage {
 
 	public String user() {
 		return getUsername();
+	}
+
+	@Override
+	public String toString() {
+		return "CommandMessage [username=" + getUsername() + ", message=" + getMessage() + "]";
 	}
 
 }

@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 import de.herglotz.twitch.messages.CommandMessage;
-import de.herglotz.twitch.commands.custom.CustomCommandParser;
 
 public class CustomCommandParserTest {
 
@@ -18,7 +17,7 @@ public class CustomCommandParserTest {
 	@Test
 	public void testThatUserNameGetsReplaced() throws Exception {
 		CustomCommandParser parser = new CustomCommandParser();
-		String result = parser.parse("<user> blubb", new CommandMessage("username", null, null, new ArrayList<>()));
+		String result = parser.parse("<user> blubb", new CommandMessage("username", null, new ArrayList<>()));
 		assertEquals("username blubb", result);
 	}
 
