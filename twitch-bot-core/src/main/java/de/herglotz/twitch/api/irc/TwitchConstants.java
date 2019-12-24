@@ -1,4 +1,4 @@
-package de.herglotz.twitch.events;
+package de.herglotz.twitch.api.irc;
 
 public class TwitchConstants {
 

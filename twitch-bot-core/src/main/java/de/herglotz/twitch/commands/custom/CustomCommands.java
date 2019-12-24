@@ -33,7 +33,7 @@ public class CustomCommands implements Command {
 
 	@Override
 	public boolean isResponsible(String commandMessage) {
-		return commandMap.keySet().contains(commandMessage);
+		return commandMap.containsKey(commandMessage);
 	}
 
 }

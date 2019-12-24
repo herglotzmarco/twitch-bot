@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import com.google.common.collect.Sets;
 
 import de.herglotz.twitch.api.irc.TwitchChat;
-import de.herglotz.twitch.commands.counter.CounterCommand;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.commands.custom.CustomCommands;
 import de.herglotz.twitch.events.CommandMessageEvent;
@@ -52,7 +51,6 @@ public class CommandHandler {
 		commands = new HashSet<>();
 		register(new HiCommand());
 		register(new CustomCommands(database.findAll(CustomCommandEntity.class)));
-		register(new CounterCommand(database));
 
 		timedCommands = Sets.newHashSet(database.findAll(TimedCommandEntity.class));
 		startTimedCommands();
@@ -84,28 +82,6 @@ public class CommandHandler {
 			copy.addAll(timedCommands);
 		}
 		return copy;
-	}
-
-	public void addTimedCommand(String command, String targetChannel, int periodInSeconds) {
-		TimedCommandEntity entity = new TimedCommandEntity();
-		entity.setCommand(command);
-		entity.setTargetChannel(targetChannel);
-		entity.setTimeInSeconds(periodInSeconds);
-		database.persist(entity);
-		synchronized (MUTEX) {
-			timedCommands.add(entity);
-		}
-		createTimer(entity);
-	}
-
-	public void removeTimedCommand(String command) {
-		synchronized (MUTEX) {
-			timedCommands.stream().filter(c -> c.getCommand().equals(command)).findFirst()//
-					.ifPresent(c -> {
-						database.delete(c);
-						timedCommands.remove(c);
-					});
-		}
 	}
 
 	public void handleEvent(@Observes TwitchEvent event) {

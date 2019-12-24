@@ -20,14 +20,14 @@ import javax.net.ssl.SSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.herglotz.twitch.StartupListener;
 import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.PingMessageEvent;
-import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.messages.Message;
 
 @ApplicationScoped
-public class TwitchChat {
+public class TwitchChat implements StartupListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitchChat.class);
 
@@ -43,7 +43,8 @@ public class TwitchChat {
 	private PrintWriter writer;
 	private BufferedReader reader;
 
-	public void connect() {
+	@Override
+	public void onStart() {
 		while (running) {
 			try (Socket twitchApi = openSocket()) {
 				connectToTwitch(twitchApi);

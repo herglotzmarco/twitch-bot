@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.messages.ChatMessage;
 import de.herglotz.twitch.messages.CommandMessage;
 import de.herglotz.twitch.messages.Message;

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.herglotz.twitch.events.TwitchConstants;
 import de.herglotz.twitch.messages.ChatMessage;
 import de.herglotz.twitch.messages.Message;
 import de.herglotz.twitch.messages.PingMessage;

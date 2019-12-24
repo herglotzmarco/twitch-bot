@@ -1,7 +1,5 @@
 package de.herglotz.twitch.api.irc;
 
-import de.herglotz.twitch.events.TwitchConstants;
-
 public class TwitchChatMessageFormatter {
 
 	private TwitchChatMessageFormatter() {
