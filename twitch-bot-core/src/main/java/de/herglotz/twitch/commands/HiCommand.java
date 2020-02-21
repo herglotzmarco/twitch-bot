@@ -9,10 +9,12 @@ import de.herglotz.twitch.messages.CommandMessage;
 
 public class HiCommand implements Command {
 
+	private Random random;
 	private Map<Integer, String> replies;
 
 	public HiCommand() {
 		replies = new HashMap<>();
+		random = new Random();
 		loadReplies();
 	}
 
@@ -25,9 +27,7 @@ public class HiCommand implements Command {
 	}
 
 	protected String pickRandomMessage() {
-		Random rand = new Random();
-		int i = rand.nextInt(replies.size());
-		return replies.get(i);
+		return replies.get(random.nextInt(replies.size()));
 	}
 
 	@Override

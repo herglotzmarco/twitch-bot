@@ -25,7 +25,6 @@ public class CustomCommandParser {
 				replacements.put("<" + placeholder + ">", CommandMessage.class.getMethod(placeholder));
 			} catch (NoSuchMethodException | SecurityException e) {
 				LOG.warn("Method {} was not found. Replacement will not work", placeholder);
-				continue;
 			}
 		}
 	}
@@ -36,7 +35,6 @@ public class CustomCommandParser {
 				message = message.replace(mapping.getKey(), mapping.getValue().invoke(parameters).toString());
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				LOG.warn("Method {} could not be called. Replacement will not work", mapping.getKey());
-				continue;
 			}
 		}
 		return message;

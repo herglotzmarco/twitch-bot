@@ -1,5 +1,7 @@
 package de.herglotz.twitch.commands.custom;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +16,14 @@ public class CustomCommandEntity {
 
 	@Column
 	private String message;
+
+	public CustomCommandEntity() {
+	}
+
+	public CustomCommandEntity(String command, String message) {
+		this.command = command;
+		this.message = message;
+	}
 
 	public String getCommand() {
 		return command;
@@ -34,27 +44,22 @@ public class CustomCommandEntity {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((command == null) ? 0 : command.hashCode());
-		return result;
+		return Objects.hash(command, message);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CustomCommandEntity other = (CustomCommandEntity) obj;
-		if (command == null) {
-			if (other.command != null)
-				return false;
-		} else if (!command.equals(other.command))
-			return false;
-		return true;
+		return Objects.equals(command, other.command) && Objects.equals(message, other.message);
 	}
 
 }

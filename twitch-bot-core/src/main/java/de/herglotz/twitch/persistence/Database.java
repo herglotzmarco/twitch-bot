@@ -1,8 +1,8 @@
 package de.herglotz.twitch.persistence;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
@@ -15,20 +15,10 @@ public class Database {
 		entityManager = Persistence.createEntityManagerFactory("production").createEntityManager();
 	}
 
-	public <T> List<T> findAll(Class<T> clazz) {
-		return entityManager.createQuery("SELECT x from " + clazz.getSimpleName() + " x", clazz).getResultList();
-	}
-
-	public void persist(Object entity) {
-		entityManager.getTransaction().begin();
-		entityManager.persist(entity);
-		entityManager.getTransaction().commit();
-	}
-
-	public void delete(Object entity) {
-		entityManager.getTransaction().begin();
-		entityManager.remove(entity);
-		entityManager.getTransaction().commit();
+	@Produces
+	@RequestScoped
+	public EntityManager produceEntityManager() {
+		return entityManager;
 	}
 
 }

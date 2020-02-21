@@ -1,87 +1,93 @@
 package de.herglotz.twitch.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
-import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.api.irc.TwitchChat;
+import de.herglotz.twitch.commands.custom.CustomCommand;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
-import de.herglotz.twitch.commands.custom.CustomCommands;
 import de.herglotz.twitch.events.CommandMessageEvent;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.messages.CommandMessage;
-import de.herglotz.twitch.persistence.Database;
 
 @ApplicationScoped
 public class CommandHandler {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CommandHandler.class);
 	private static final int MAX_DELAY = 1200000;
-	private static final Object MUTEX = new Object();
 
 	@Inject
-	private Database database;
+	private EntityManager entityManager;
 
 	@Inject
 	private TwitchChat twitch;
 
 	private Set<Command> commands;
-	private Set<TimedCommandEntity> timedCommands;
-	private int maxDelay;
-
-	public CommandHandler() {
-		this(MAX_DELAY);
-	}
-
-	public CommandHandler(int maxDelay) {
-		this.maxDelay = maxDelay;
-	}
+	private Map<String, Timer> timedCommands;
 
 	@PostConstruct
 	public void init() {
 		commands = new HashSet<>();
-		register(new HiCommand());
-		register(new CustomCommands(database.findAll(CustomCommandEntity.class)));
+		commands.add(new HiCommand());
+		commands.addAll(fetchAllCommands());
 
-		timedCommands = Sets.newHashSet(database.findAll(TimedCommandEntity.class));
+		timedCommands = new HashMap<>();
 		startTimedCommands();
 	}
 
+	private List<CustomCommand> fetchAllCommands() {
+		List<CustomCommandEntity> customCommands = entityManager
+				.createQuery("SELECT c FROM CustomCommandEntity c", CustomCommandEntity.class)//
+				.getResultList();
+		customCommands.forEach(c -> LOG.info("Added custom command: {}", c.getCommand()));
+		return customCommands.stream()//
+				.map(CustomCommand::new)//
+				.collect(Collectors.toList());
+	}
+
 	private void startTimedCommands() {
-		for (TimedCommandEntity command : getTimedCommands()) {
-			createTimer(command);
-		}
+		fetchAllTimedCommands().forEach(this::createTimer);
+	}
+
+	private List<TimedCommandEntity> fetchAllTimedCommands() {
+		return entityManager.createQuery("SELECT c FROM TimedCommandEntity c", TimedCommandEntity.class)//
+				.getResultList();
 	}
 
 	private void createTimer(TimedCommandEntity command) {
-		Timer timer = new Timer(String.format("%s_%s_Timer", command.getCommand(), command.getTimeInSeconds()), true);
+		String commandName = command.getCommand();
+		int interval = command.getTimeInSeconds();
+		int initialDelay = new Random().nextInt(MAX_DELAY);
+
+		Timer timer = new Timer(String.format("%s_%s_Timer", commandName, interval), true);
 		timer.scheduleAtFixedRate(new TimerTask() {
 
 			@Override
 			public void run() {
-				handleEvent(new CommandMessageEvent(new CommandMessage("", command.getCommand(), new ArrayList<>())));
-				if (!getTimedCommands().contains(command)) {
-					timer.cancel();
-				}
+				handleEvent(new CommandMessageEvent(new CommandMessage("", commandName, new ArrayList<>())));
 			}
-		}, new Random().nextInt(maxDelay), command.getTimeInSeconds() * 1000L);
-	}
+		}, initialDelay, interval * 1000L);
 
-	private Set<TimedCommandEntity> getTimedCommands() {
-		Set<TimedCommandEntity> copy = new HashSet<>();
-		synchronized (MUTEX) {
-			copy.addAll(timedCommands);
-		}
-		return copy;
+		LOG.info("Started timer for command {}: initial delay: {} seconds, interval: {} seconds", commandName,
+				initialDelay / 1000, interval);
+		timedCommands.put(commandName, timer);
 	}
 
 	public void handleEvent(@Observes TwitchEvent event) {
@@ -89,11 +95,8 @@ public class CommandHandler {
 			commands.stream()//
 					.filter(c -> c.isResponsible(((CommandMessageEvent) event).getMessage().getCommand()))//
 					.forEach(c -> c.run(twitch, ((CommandMessageEvent) event).getMessage()));
-		}
-	}
 
-	public void register(Command command) {
-		commands.add(command);
+		}
 	}
 
 }

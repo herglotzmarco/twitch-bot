@@ -9,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -65,8 +65,8 @@ public class TwitchChat implements StartupListener {
 		OutputStream outputStream = twitchApi.getOutputStream();
 		InputStream inputStream = twitchApi.getInputStream();
 
-		writer = new PrintWriter(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")));
-		reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+		writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+		reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
 		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
 		writer.println(String.format(TwitchConstants.TWITCH_API_NICK, credentialProvider.getBotUsername()));

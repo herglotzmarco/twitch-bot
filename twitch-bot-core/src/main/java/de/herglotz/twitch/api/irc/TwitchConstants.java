@@ -2,6 +2,9 @@ package de.herglotz.twitch.api.irc;
 
 public class TwitchConstants {
 
+	private TwitchConstants() {
+	}
+
 	// Connection Properties
 	public static final String TWITCH_API_ADRESS = "irc.chat.twitch.tv";
 	public static final int TWITCH_API_PORT = 443;
