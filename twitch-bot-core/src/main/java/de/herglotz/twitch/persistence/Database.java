@@ -1,7 +1,6 @@
 package de.herglotz.twitch.persistence;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -16,7 +15,6 @@ public class Database {
 	}
 
 	@Produces
-	@RequestScoped
 	public EntityManager produceEntityManager() {
 		return entityManager;
 	}

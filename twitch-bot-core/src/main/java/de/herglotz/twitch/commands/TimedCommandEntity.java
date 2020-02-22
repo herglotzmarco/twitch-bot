@@ -15,6 +15,14 @@ public class TimedCommandEntity {
 	@Column
 	private int timeInSeconds;
 
+	public TimedCommandEntity() {
+	}
+
+	public TimedCommandEntity(String command, int timeInSeconds) {
+		this.command = command;
+		this.timeInSeconds = timeInSeconds;
+	}
+
 	public String getCommand() {
 		return command;
 	}

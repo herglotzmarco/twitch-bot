@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import com.google.common.base.Preconditions;
-
 @Entity
 public class CustomCommandEntity {
 
@@ -34,7 +32,6 @@ public class CustomCommandEntity {
 	}
 
 	public void setCommand(String command) {
-		Preconditions.checkNotNull(command);
 		this.command = command;
 	}
 

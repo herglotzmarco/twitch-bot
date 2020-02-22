@@ -45,6 +45,10 @@ public class TwitchChat implements StartupListener {
 
 	@Override
 	public void onStart() {
+		new Thread(this::runTwitchChat, "TwitchChat").start();
+	}
+
+	private void runTwitchChat() {
 		while (running) {
 			try (Socket twitchApi = openSocket()) {
 				connectToTwitch(twitchApi);
@@ -74,7 +78,7 @@ public class TwitchChat implements StartupListener {
 		writer.println(String.format(TwitchConstants.TWITCH_API_JOIN, targetChannel));
 		writer.flush();
 
-		LOG.info("Connection successful");
+		LOG.info("[SUCCESS] -> Connecting to Twitch IRC");
 	}
 
 	private Socket openSocket() throws IOException {
