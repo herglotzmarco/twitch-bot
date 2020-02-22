@@ -8,4 +8,6 @@ public interface Command {
 	void run(TwitchChat twitch, CommandMessage commandMessage);
 
 	boolean isResponsible(String commandMessage);
+
+	String getCommand();
 }

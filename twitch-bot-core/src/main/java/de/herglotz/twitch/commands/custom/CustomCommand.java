@@ -27,6 +27,15 @@ public class CustomCommand implements Command {
 	}
 
 	@Override
+	public String getCommand() {
+		return command;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	@Override
 	public int hashCode() {
 		return Objects.hash(command, message);
 	}

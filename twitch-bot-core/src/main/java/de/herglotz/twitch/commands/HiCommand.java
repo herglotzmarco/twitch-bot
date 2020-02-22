@@ -35,6 +35,11 @@ public class HiCommand implements Command {
 		return commandMessage.equals("hi");
 	}
 
+	@Override
+	public String getCommand() {
+		return "hi";
+	}
+
 	private void loadReplies() {
 		replies.put(0, "Hallöchen %s! <3 -lich willkommen bei uns. Genieß den Stream!");
 		replies.put(1, "Hey %s! Schön, dass du bei uns einschaltet hast :)");

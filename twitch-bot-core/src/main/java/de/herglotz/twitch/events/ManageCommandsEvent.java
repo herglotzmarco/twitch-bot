@@ -7,16 +7,20 @@ public class ManageCommandsEvent implements TwitchEvent {
 	private String message;
 	private int timeInSeconds;
 
+	public static ManageCommandsEvent update(String command, String message) {
+		return new ManageCommandsEvent(ManageCommandOperation.UPDATE, command, message, 0);
+	}
+
 	public static ManageCommandsEvent remove(String command) {
 		return new ManageCommandsEvent(ManageCommandOperation.REMOVE, command, null, 0);
 	}
 
-	public static ManageCommandsEvent add(String command, String message) {
-		return new ManageCommandsEvent(ManageCommandOperation.ADD, command, message, 0);
+	public static ManageCommandsEvent updateTimed(String command, int timeInSeconds) {
+		return new ManageCommandsEvent(ManageCommandOperation.UPDATE_TIMED, command, null, timeInSeconds);
 	}
 
-	public static ManageCommandsEvent timed(String command, int timeInSeconds) {
-		return new ManageCommandsEvent(ManageCommandOperation.TIMED, command, null, timeInSeconds);
+	public static ManageCommandsEvent removeTimed(String command) {
+		return new ManageCommandsEvent(ManageCommandOperation.REMOVE_TIMED, command, null, -1);
 	}
 
 	private ManageCommandsEvent(ManageCommandOperation operation, String command, String message, int timeInSeconds) {
@@ -43,7 +47,7 @@ public class ManageCommandsEvent implements TwitchEvent {
 	}
 
 	public enum ManageCommandOperation {
-		ADD, REMOVE, TIMED;
+		UPDATE, REMOVE, UPDATE_TIMED, REMOVE_TIMED;
 	}
 
 }
