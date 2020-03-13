@@ -1,7 +1,7 @@
 package de.herglotz.twitch.messages;
 
 import de.herglotz.twitch.events.TwitchEvent;
-import de.herglotz.twitch.events.MessageEvent;
+import de.herglotz.twitch.events.message.MessageEvent;
 
 public class Message {
 

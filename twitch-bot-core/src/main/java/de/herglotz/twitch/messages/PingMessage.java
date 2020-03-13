@@ -1,7 +1,7 @@
 package de.herglotz.twitch.messages;
 
-import de.herglotz.twitch.events.PingMessageEvent;
 import de.herglotz.twitch.events.TwitchEvent;
+import de.herglotz.twitch.events.manage.PingMessageEvent;
 
 public class PingMessage extends Message {
 

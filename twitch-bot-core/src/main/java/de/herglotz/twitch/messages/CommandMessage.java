@@ -3,8 +3,8 @@ package de.herglotz.twitch.messages;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.herglotz.twitch.events.CommandMessageEvent;
 import de.herglotz.twitch.events.TwitchEvent;
+import de.herglotz.twitch.events.message.CommandMessageEvent;
 
 public class CommandMessage extends ChatMessage {
 

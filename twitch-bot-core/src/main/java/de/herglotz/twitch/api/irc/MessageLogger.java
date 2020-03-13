@@ -6,9 +6,9 @@ import javax.enterprise.event.Observes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.events.ChatMessageEvent;
-import de.herglotz.twitch.events.MessageEvent;
 import de.herglotz.twitch.events.TwitchEvent;
+import de.herglotz.twitch.events.message.ChatMessageEvent;
+import de.herglotz.twitch.events.message.MessageEvent;
 import de.herglotz.twitch.messages.ChatMessage;
 import de.herglotz.twitch.messages.Message;
 

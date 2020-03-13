@@ -1,4 +1,4 @@
-package de.herglotz.twitch;
+package de.herglotz;
 
 public interface StartupListener {
 

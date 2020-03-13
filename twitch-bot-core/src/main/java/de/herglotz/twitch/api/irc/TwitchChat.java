@@ -20,14 +20,15 @@ import javax.net.ssl.SSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.StartupListener;
+import de.herglotz.ApplicationStatus;
 import de.herglotz.twitch.credentials.CredentialProvider;
-import de.herglotz.twitch.events.PingMessageEvent;
 import de.herglotz.twitch.events.TwitchEvent;
+import de.herglotz.twitch.events.manage.PingMessageEvent;
+import de.herglotz.twitch.events.manage.StartupEvent;
 import de.herglotz.twitch.messages.Message;
 
 @ApplicationScoped
-public class TwitchChat implements StartupListener {
+public class TwitchChat {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitchChat.class);
 
@@ -35,21 +36,16 @@ public class TwitchChat implements StartupListener {
 	private CredentialProvider credentialProvider;
 
 	@Inject
-	private Event<TwitchEvent> eventHandler;
+	private ApplicationStatus status;
 
-	private boolean running = true;
-	private String targetChannel = "flitzpiepe96";
+	@Inject
+	private Event<TwitchEvent> eventHandler;
 
 	private PrintWriter writer;
 	private BufferedReader reader;
 
-	@Override
-	public void onStart() {
-		new Thread(this::runTwitchChat, "TwitchChat").start();
-	}
-
 	private void runTwitchChat() {
-		while (running) {
+		while (status.isRunning()) {
 			try (Socket twitchApi = openSocket()) {
 				connectToTwitch(twitchApi);
 				readMessages();
@@ -59,9 +55,10 @@ public class TwitchChat implements StartupListener {
 				LOG.error("Exception reading Twitch IRC", e);
 			} catch (Exception e) {
 				LOG.error("Twitch Bot crashed", e);
-				System.exit(0);
+				System.exit(1);
 			}
 		}
+		LOG.info("[SUCCESS] -> Stopping TwitchChat");
 	}
 
 	private void connectToTwitch(Socket twitchApi) throws IOException {
@@ -75,7 +72,7 @@ public class TwitchChat implements StartupListener {
 		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
 		writer.println(String.format(TwitchConstants.TWITCH_API_NICK, credentialProvider.getBotUsername()));
 		writer.println(TwitchConstants.TWITCH_API_REQCOMMANDS);
-		writer.println(String.format(TwitchConstants.TWITCH_API_JOIN, targetChannel));
+		writer.println(String.format(TwitchConstants.TWITCH_API_JOIN, credentialProvider.getTargetChannel()));
 		writer.flush();
 
 		LOG.info("[SUCCESS] -> Connecting to Twitch IRC");
@@ -89,23 +86,27 @@ public class TwitchChat implements StartupListener {
 	private void readMessages() throws IOException {
 		String line;
 		TwitchMessageParser parser = new TwitchMessageParser();
-		while ((line = reader.readLine()) != null) {
+		while (status.isRunning() && (line = reader.readLine()) != null) {
 			Message message = parser.parse(line);
 			eventHandler.fire(message.toEvent());
 		}
 	}
 
 	public void sendChatMessage(String message) {
-		sendRawMessage(TwitchChatMessageFormatter.format(targetChannel, message));
+		sendRawMessage(TwitchChatMessageFormatter.format(credentialProvider.getTargetChannel(), message));
 	}
 
-	public void sendRawMessage(String message) {
+	private void sendRawMessage(String message) {
 		writer.println(message);
 		writer.flush();
 	}
 
 	public void handleEvent(@Observes TwitchEvent event) {
-		if (event instanceof PingMessageEvent) {
+		if (event instanceof StartupEvent) {
+			LOG.info("Starting TwitchChat...");
+			new Thread(this::runTwitchChat, "TwitchChat").start();
+			LOG.info("[SUCCESS] -> Starting TwitchChat");
+		} else if (event instanceof PingMessageEvent) {
 			sendRawMessage(TwitchConstants.TWITCH_API_PONG);
 		}
 	}

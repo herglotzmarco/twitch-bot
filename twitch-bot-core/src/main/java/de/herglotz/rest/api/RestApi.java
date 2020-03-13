@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.StartupListener;
+import de.herglotz.StartupListener;
 import io.javalin.Javalin;
 
 @ApplicationScoped
@@ -23,6 +23,7 @@ public class RestApi implements StartupListener {
 		LOG.info("Starting REST Api...");
 		Javalin api = Javalin.create().start(7000);
 		endpoints.forEach(endpoint -> endpoint.start(api));
+		Runtime.getRuntime().addShutdownHook(new Thread(api::stop));
 		LOG.info("[SUCCESS] -> Starting REST Api");
 	}
 

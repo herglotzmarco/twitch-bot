@@ -37,4 +37,8 @@ public class CredentialProvider {
 		return getProperties().getProperty("CLIENT_ID", "");
 	}
 
+	public String getTargetChannel() {
+		return getProperties().getProperty("TARGET_CHANNEL", "");
+	}
+
 }

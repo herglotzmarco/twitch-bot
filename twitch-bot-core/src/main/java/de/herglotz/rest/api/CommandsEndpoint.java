@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import de.herglotz.twitch.commands.CommandDAO;
 import de.herglotz.twitch.commands.TimedCommandEntity;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
-import de.herglotz.twitch.events.ManageCommandsEvent;
 import de.herglotz.twitch.events.TwitchEvent;
+import de.herglotz.twitch.events.manage.ManageCommandsEvent;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 

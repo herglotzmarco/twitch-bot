@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
-import de.herglotz.twitch.events.CommandsChangedEvent;
-import de.herglotz.twitch.events.ManageCommandsEvent;
 import de.herglotz.twitch.events.TwitchEvent;
+import de.herglotz.twitch.events.change.CommandsChangedEvent;
+import de.herglotz.twitch.events.manage.ManageCommandsEvent;
 
 @ApplicationScoped
 public class CommandDAO {
