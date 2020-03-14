@@ -1,26 +1,31 @@
 package de.herglotz;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import de.herglotz.twitch.events.TwitchEvent;
-import de.herglotz.twitch.events.manage.ShutdownEvent;
-import de.herglotz.twitch.events.manage.StartupEvent;
+public enum ApplicationStatus {
 
-@ApplicationScoped
-public class ApplicationStatus {
+	STOPPED, STARTING, STARTED, STOPPING, UNSTABLE;
 
-	private boolean running;
+	private static final Logger LOG = LoggerFactory.getLogger(ApplicationStatus.class);
 
-	public boolean isRunning() {
-		return running;
-	}
-
-	public void handleEvent(@Observes TwitchEvent event) {
-		if (event instanceof StartupEvent) {
-			running = true;
-		} else if (event instanceof ShutdownEvent) {
-			running = false;
+	public static ApplicationStatus mergeStatus(ApplicationStatus first, ApplicationStatus second) {
+		if (first == second) {
+			return first;
 		}
+		if (first == UNSTABLE || second == UNSTABLE) {
+			return UNSTABLE;
+		}
+		if ((first == STARTING && second == STARTED)//
+				|| (second == STARTING && first == STARTED)) {
+			return STARTING;
+		}
+		if ((first == STOPPING && second == STOPPED)//
+				|| (second == STOPPING && first == STOPPED)) {
+			return STOPPING;
+		}
+		LOG.warn("Invalid combination: {} and {}", first, second);
+		return UNSTABLE;
 	}
+
 }

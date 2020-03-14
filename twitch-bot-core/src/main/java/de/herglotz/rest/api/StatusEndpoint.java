@@ -6,15 +6,17 @@ import static io.javalin.apibuilder.ApiBuilder.put;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.ApplicationStatus;
+import de.herglotz.IApplicationStatusProvider;
 import de.herglotz.twitch.events.TwitchEvent;
-import de.herglotz.twitch.events.manage.ShutdownEvent;
-import de.herglotz.twitch.events.manage.StartupEvent;
+import de.herglotz.twitch.events.manage.StopServicesEvent;
+import de.herglotz.twitch.events.manage.StartServicesEvent;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -27,7 +29,7 @@ public class StatusEndpoint implements RESTEndoint {
 	private Event<TwitchEvent> eventHandler;
 
 	@Inject
-	private ApplicationStatus status;
+	private Instance<IApplicationStatusProvider> statusProvider;
 
 	@Override
 	public void start(Javalin api) {
@@ -45,30 +47,33 @@ public class StatusEndpoint implements RESTEndoint {
 	}
 
 	private void getStatus(Context ctx) {
-		ctx.json(new StatusResponse(status.isRunning() ? ServicesStatus.RUNNING : ServicesStatus.STOPPED));
+		ctx.json(new StatusResponse(collectStatus()));
 		LOG.info("[200] -> getStatus");
 	}
 
 	private void startServices(Context ctx) {
-		eventHandler.fire(new StartupEvent());
+		eventHandler.fire(new StartServicesEvent());
 		LOG.info("[200] -> startServices");
 	}
 
 	private void stopServices(Context ctx) {
-		eventHandler.fire(new ShutdownEvent());
+		eventHandler.fire(new StopServicesEvent());
 		LOG.info("[200] -> stopServices");
 	}
 
-	public class StatusResponse {
-		public ServicesStatus status;
-
-		public StatusResponse(ServicesStatus status) {
-			this.status = status;
-		}
+	private ApplicationStatus collectStatus() {
+		return statusProvider.stream()//
+				.map(IApplicationStatusProvider::getStatus)//
+				.reduce(ApplicationStatus::mergeStatus)//
+				.orElse(ApplicationStatus.UNSTABLE);
 	}
 
-	public enum ServicesStatus {
-		STOPPED, RUNNING;
+	public class StatusResponse {
+		public ApplicationStatus status;
+
+		public StatusResponse(ApplicationStatus status) {
+			this.status = status;
+		}
 	}
 
 }

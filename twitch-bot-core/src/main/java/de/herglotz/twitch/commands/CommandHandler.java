@@ -21,18 +21,20 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.herglotz.ApplicationStatus;
+import de.herglotz.IApplicationStatusProvider;
 import de.herglotz.twitch.api.irc.TwitchChat;
 import de.herglotz.twitch.commands.custom.CustomCommand;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.change.CommandsChangedEvent;
-import de.herglotz.twitch.events.manage.ShutdownEvent;
-import de.herglotz.twitch.events.manage.StartupEvent;
+import de.herglotz.twitch.events.manage.StopServicesEvent;
+import de.herglotz.twitch.events.manage.StartServicesEvent;
 import de.herglotz.twitch.events.message.CommandMessageEvent;
 import de.herglotz.twitch.messages.CommandMessage;
 
 @ApplicationScoped
-public class CommandHandler {
+public class CommandHandler implements IApplicationStatusProvider {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandHandler.class);
 	private static final int MAX_DELAY = 1200000;
@@ -45,6 +47,7 @@ public class CommandHandler {
 
 	private Random random = new Random();
 
+	private ApplicationStatus status = ApplicationStatus.STOPPED;
 	private Set<Command> commands = new HashSet<>();
 	private Map<TimedCommandEntity, Timer> timedCommands = new HashMap<>();
 
@@ -92,14 +95,18 @@ public class CommandHandler {
 	}
 
 	public void handleEvent(@Observes TwitchEvent event) {
-		if (event instanceof StartupEvent) {
+		if (event instanceof StartServicesEvent) {
 			LOG.info("Starting CommandHandler...");
+			status = ApplicationStatus.STARTING;
 			reload();
+			status = ApplicationStatus.STARTED;
 			LOG.info("[SUCCESS] -> Starting CommandHandler");
-		} else if (event instanceof ShutdownEvent) {
+		} else if (event instanceof StopServicesEvent) {
 			LOG.info("Stopping CommandHandler...");
+			status = ApplicationStatus.STOPPING;
 			timedCommands.values().forEach(Timer::cancel);
 			timedCommands.clear();
+			status = ApplicationStatus.STOPPED;
 			LOG.info("[SUCCESS] -> Stopping CommandHandler");
 		} else if (event instanceof CommandMessageEvent) {
 			commands.stream()//
@@ -108,6 +115,11 @@ public class CommandHandler {
 		} else if (event instanceof CommandsChangedEvent) {
 			reload();
 		}
+	}
+
+	@Override
+	public ApplicationStatus getStatus() {
+		return status;
 	}
 
 }

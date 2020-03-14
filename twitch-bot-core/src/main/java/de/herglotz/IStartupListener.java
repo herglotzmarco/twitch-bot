@@ -1,6 +1,6 @@
 package de.herglotz;
 
-public interface StartupListener {
+public interface IStartupListener {
 
 	void onStart();
 

@@ -7,11 +7,11 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.herglotz.StartupListener;
+import de.herglotz.IStartupListener;
 import io.javalin.Javalin;
 
 @ApplicationScoped
-public class RestApi implements StartupListener {
+public class RestApi implements IStartupListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RestApi.class);
 

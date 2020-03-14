@@ -21,14 +21,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.herglotz.ApplicationStatus;
+import de.herglotz.IApplicationStatusProvider;
 import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.manage.PingMessageEvent;
-import de.herglotz.twitch.events.manage.StartupEvent;
+import de.herglotz.twitch.events.manage.StopServicesEvent;
+import de.herglotz.twitch.events.manage.StartServicesEvent;
 import de.herglotz.twitch.messages.Message;
 
 @ApplicationScoped
-public class TwitchChat {
+public class TwitchChat implements IApplicationStatusProvider {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TwitchChat.class);
 
@@ -36,16 +38,14 @@ public class TwitchChat {
 	private CredentialProvider credentialProvider;
 
 	@Inject
-	private ApplicationStatus status;
-
-	@Inject
 	private Event<TwitchEvent> eventHandler;
 
+	private ApplicationStatus status = ApplicationStatus.STOPPED;
 	private PrintWriter writer;
 	private BufferedReader reader;
 
 	private void runTwitchChat() {
-		while (status.isRunning()) {
+		while (status == ApplicationStatus.STARTED || status == ApplicationStatus.STARTING) {
 			try (Socket twitchApi = openSocket()) {
 				connectToTwitch(twitchApi);
 				readMessages();
@@ -58,6 +58,7 @@ public class TwitchChat {
 				System.exit(1);
 			}
 		}
+		status = ApplicationStatus.STOPPED;
 		LOG.info("[SUCCESS] -> Stopping TwitchChat");
 	}
 
@@ -75,6 +76,7 @@ public class TwitchChat {
 		writer.println(String.format(TwitchConstants.TWITCH_API_JOIN, credentialProvider.getTargetChannel()));
 		writer.flush();
 
+		status = ApplicationStatus.STARTED;
 		LOG.info("[SUCCESS] -> Connecting to Twitch IRC");
 	}
 
@@ -86,7 +88,7 @@ public class TwitchChat {
 	private void readMessages() throws IOException {
 		String line;
 		TwitchMessageParser parser = new TwitchMessageParser();
-		while (status.isRunning() && (line = reader.readLine()) != null) {
+		while (status == ApplicationStatus.STARTED && (line = reader.readLine()) != null) {
 			Message message = parser.parse(line);
 			eventHandler.fire(message.toEvent());
 		}
@@ -102,12 +104,21 @@ public class TwitchChat {
 	}
 
 	public void handleEvent(@Observes TwitchEvent event) {
-		if (event instanceof StartupEvent) {
+		if (event instanceof StartServicesEvent) {
 			LOG.info("Starting TwitchChat...");
+			status = ApplicationStatus.STARTING;
 			new Thread(this::runTwitchChat, "TwitchChat").start();
 			LOG.info("[SUCCESS] -> Starting TwitchChat");
+		} else if (event instanceof StopServicesEvent) {
+			LOG.info("Stopping TwitchChat...");
+			status = ApplicationStatus.STOPPING;
 		} else if (event instanceof PingMessageEvent) {
 			sendRawMessage(TwitchConstants.TWITCH_API_PONG);
 		}
+	}
+
+	@Override
+	public ApplicationStatus getStatus() {
+		return status;
 	}
 }
