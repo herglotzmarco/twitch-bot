@@ -4,4 +4,4 @@
 sh 'build.sh'
 
 # run
-java -jar twitch-bot-core/target/Twitch-Bot.jar
+java -jar Twitch-Bot.jar

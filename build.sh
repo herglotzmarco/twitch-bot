@@ -16,7 +16,14 @@ echo "Done -> Copying angular dist"
 
 # build backend
 echo 'Compiling java backend...'
-cd twitch-bot-core
-mvn clean package
-cd ..
+mvn package -f 'twitch-bot-core/pom.xml'
 echo 'Done -> Compiling java backend'
+
+# fetching artefact
+cp twitch-bot-core/target/Twitch-Bot.jar Twitch-Bot.jar
+
+# cleaning up
+echo 'Cleaning up...'
+rm -rf twitch-bot-angular/dist/
+mvn clean -f 'twitch-bot-core/pom.xml'
+echo 'Done -> Cleaning up'
