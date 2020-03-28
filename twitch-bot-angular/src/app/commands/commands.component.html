@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-xs-4">
+        <app-command-list></app-command-list>
+    </div>
+    <div class="col-xs-8">
+        <app-command-detail *ngIf="selectedCommand; else noCommandSelected" [selectedCommand]="selectedCommand">
+        </app-command-detail>
+        <ng-template #noCommandSelected>
+            <p>Please select a command!</p>
+        </ng-template>
+    </div>
+</div>
