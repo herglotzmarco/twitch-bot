@@ -1,4 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+
 import { Command } from '../command.model';
 import { CommandsService } from '../commands.service';
 
@@ -7,27 +9,31 @@ import { CommandsService } from '../commands.service';
   templateUrl: './command-detail.component.html',
   styleUrls: ['./command-detail.component.css']
 })
-export class CommandDetailComponent implements OnChanges {
+export class CommandDetailComponent implements OnInit {
 
-  @Input() selectedCommand: Command;
+  command: Command;
 
-  commandName: string;
-  commandMessage: string;
+  commandNameInput: string;
+  commandMessageInput: string;
 
-  constructor(private commandsService: CommandsService) { }
+  constructor(private commandsService: CommandsService, private route: ActivatedRoute) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.commandName = changes.selectedCommand.currentValue.name;
-    this.commandMessage = changes.selectedCommand.currentValue.message;
+  ngOnInit() {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.command = this.commandsService.getCommandForName(params.name);
+        this.onCancel();
+      }
+    );
   }
 
   onSave() {
-    this.commandsService.updateCommand(this.selectedCommand, this.commandName, this.commandMessage);
+    this.commandsService.updateCommand(this.command.name, this.commandNameInput, this.commandMessageInput);
   }
 
   onCancel() {
-    this.commandName = this.selectedCommand.name;
-    this.commandMessage = this.selectedCommand.message;
+    this.commandNameInput = this.command.name;
+    this.commandMessageInput = this.command.message;
   }
 
 }

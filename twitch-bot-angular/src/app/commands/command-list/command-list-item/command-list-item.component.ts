@@ -1,6 +1,5 @@
 import { Command } from './../../command.model';
 import { Component, Input } from '@angular/core';
-import { CommandsService } from '../../commands.service';
 
 @Component({
   selector: 'app-command-list-item',
@@ -10,11 +9,5 @@ import { CommandsService } from '../../commands.service';
 export class CommandListItemComponent {
 
   @Input() command: Command;
-
-  constructor(private commandsService: CommandsService) { }
-
-  onSelectCommand() {
-    this.commandsService.commandSelected.emit(this.command);
-  }
 
 }

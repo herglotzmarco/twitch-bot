@@ -1,4 +1,4 @@
-<a href="#" class="list-group-item clearfix" (click)="onSelectCommand()">
+<a [routerLink]="[command.name]" routerLinkActive="active" class="list-group-item clearfix">
     <div class="pull-left">
         <h4 class="list-group-item-heading">{{ command.name }}</h4>
     </div>

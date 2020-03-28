@@ -12,17 +12,20 @@ export class CommandsService {
     new Command('songrequest', 'songrequest test')
   ];
 
-  commandSelected: EventEmitter<Command> = new EventEmitter<Command>();
   commandsChanged: EventEmitter<Command[]> = new EventEmitter<Command[]>();
 
   getCommands() {
     return this.commands.slice();
   }
 
-  updateCommand(command: Command, commandName: string, commandMessage: string) {
-    const index = this.commands.indexOf(command);
-    this.commands[index].name = commandName;
-    this.commands[index].message = commandMessage;
+  getCommandForName(name: string) {
+    return this.getCommands().find(c => c.name === name);
+  }
+
+  updateCommand(oldName: string, newName: string, message: string) {
+    const affectedCommand = this.getCommandForName(oldName);
+    affectedCommand.name = newName;
+    affectedCommand.message = message;
     this.commandsChanged.emit(this.getCommands());
   }
 }

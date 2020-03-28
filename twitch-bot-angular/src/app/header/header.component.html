@@ -6,13 +6,13 @@
                 <!-- those are the 3 "patties" in the hamburger menu icon -->
                 <span class="icon-bar" *ngFor="let iconBar of [1, 2, 3]"></span>
             </button>
-            <a href="#" class="navbar-brand">Twitch Bot</a>
+            <a [routerLink]="['/status']" class="navbar-brand">Twitch Bot</a>
         </div>
         <!-- close the menu automatically on window resize -->
         <div class="navbar-collapse" [class.collapse]="menuCollapsed" (window:resize)="menuCollapsed = true">
             <ul class="nav navbar-nav">
-                <li><a href="#" (click)="onSelectFeature('command-management')">Command Management</a></li>
-                <!-- <li><a href="#" (click)="onSelectFeature('shoppingList')">Shopping List</a></li> -->
+                <li routerLinkActive="active"><a [routerLink]="['/status']">Status</a></li>
+                <li routerLinkActive="active"><a [routerLink]="['/commands']">Command Management</a></li>
             </ul>
         </div>
     </div>
