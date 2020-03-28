@@ -11,6 +11,8 @@ import { CommandDetailComponent } from './commands/command-detail/command-detail
 import { CommandListItemComponent } from './commands/command-list/command-list-item/command-list-item.component';
 import { StatusComponent } from './status/status.component';
 import { CommandStartComponent } from './commands/command-start/command-start.component';
+import { StatusActionsComponent } from './status/status-actions/status-actions.component';
+import { StatusDetailComponent } from './status/status-detail/status-detail.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { CommandStartComponent } from './commands/command-start/command-start.co
     CommandDetailComponent,
     CommandListItemComponent,
     StatusComponent,
-    CommandStartComponent
+    CommandStartComponent,
+    StatusActionsComponent,
+    StatusDetailComponent
   ],
   imports: [
     BrowserModule,

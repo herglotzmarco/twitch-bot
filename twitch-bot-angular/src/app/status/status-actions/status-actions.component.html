@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col-sm-2">
+        <button class="btn btn-success" (click)="onStart()" [disabled]="!canStart()">Start</button>
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-primary" (click)="onRestart()" [disabled]="!canRestart()">Restart</button>
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-danger" (click)="onStop()" [disabled]="!canStop()">Stop</button>
+    </div>
+</div>
