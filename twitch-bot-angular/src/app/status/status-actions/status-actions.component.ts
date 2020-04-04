@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { StatusService } from './../status.service';
 import { Status } from '../status.model';
@@ -8,19 +9,24 @@ import { Status } from '../status.model';
   templateUrl: './status-actions.component.html',
   styleUrls: ['./status-actions.component.css']
 })
-export class StatusActionsComponent implements OnInit {
+export class StatusActionsComponent implements OnInit, OnDestroy {
 
   status: Status;
+  subscription: Subscription;
 
   constructor(private statusService: StatusService) { }
 
   ngOnInit() {
     this.status = this.statusService.getStatus();
-    this.statusService.statusChanged.subscribe(
+    this.subscription = this.statusService.statusChanged.subscribe(
       (status: Status) => {
         this.status = status;
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   canStart() {

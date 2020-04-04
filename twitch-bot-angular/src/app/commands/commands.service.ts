@@ -1,5 +1,6 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Command } from './command.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class CommandsService {
     new Command('songrequest', 'songrequest test')
   ];
 
-  commandsChanged: EventEmitter<Command[]> = new EventEmitter<Command[]>();
+  commandsChanged = new Subject<Command[]>();
 
   getCommands() {
     return this.commands.slice();
@@ -22,10 +23,20 @@ export class CommandsService {
     return this.getCommands().find(c => c.name === name);
   }
 
-  updateCommand(oldName: string, newName: string, message: string) {
-    const affectedCommand = this.getCommandForName(oldName);
-    affectedCommand.name = newName;
-    affectedCommand.message = message;
-    this.commandsChanged.emit(this.getCommands());
+  updateCommand(oldName: string, updatedCommand: Command) {
+    const index = this.getCommandIndexForName(oldName);
+    this.commands[index] = updatedCommand;
+    this.commandsChanged.next(this.getCommands());
   }
+
+  deleteCommand(name: string) {
+    const index = this.getCommandIndexForName(name);
+    this.commands.splice(index, 1);
+    this.commandsChanged.next(this.getCommands());
+  }
+
+  private getCommandIndexForName(name: string): number {
+    return this.getCommands().findIndex(c => c.name === name);
+  }
+
 }

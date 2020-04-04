@@ -1,12 +1,13 @@
 import { Status } from './status.model';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StatusService {
 
-  statusChanged: EventEmitter<Status> = new EventEmitter<Status>();
+  statusChanged = new Subject<Status>();
 
   private status: Status = Status.stopped();
 
@@ -42,7 +43,7 @@ export class StatusService {
 
   private updateStatus(newStatus: Status) {
     this.status = newStatus;
-    this.statusChanged.emit(this.status);
+    this.statusChanged.next(this.status);
   }
 
 }
