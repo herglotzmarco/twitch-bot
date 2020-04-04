@@ -3,7 +3,9 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Command } from '../command.model';
 import { CommandsService } from '../commands.service';
-import { NgForm, FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { flatMap, catchError, map, switchMap } from 'rxjs/operators';
+import { of, timer } from 'rxjs';
 
 @Component({
   selector: 'app-command-detail',
@@ -12,32 +14,46 @@ import { NgForm, FormGroup, FormControl, Validators, ValidationErrors } from '@a
 })
 export class CommandDetailComponent implements OnInit {
 
-  command: Command;
   form: FormGroup;
+
+  private command: Command;
 
   constructor(private commandsService: CommandsService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-    this.route.params.subscribe(
-      (params: Params) => {
-        this.command = this.commandsService.getCommandForName(params.name);
-        this.initForm();
+    this.initForm();
+    this.route.params.pipe(
+      flatMap((params: Params) => this.commandsService.getCommandForName(params.name))
+    ).subscribe(
+      (command: Command) => {
+        this.command = command;
+        this.onReset();
       }
     );
   }
 
   private initForm() {
     this.form = new FormGroup({
-      name: new FormControl(this.command.name, [Validators.required, this.commandNameUnique.bind(this)]),
-      message: new FormControl(this.command.message, Validators.required)
+      name: new FormControl('', Validators.required, this.commandNameUnique.bind(this)),
+      message: new FormControl('', Validators.required)
     });
   }
 
-  private commandNameUnique(control: FormControl): ValidationErrors | null {
-    if (control.value !== this.command.name && this.commandsService.getCommandForName(control.value)) {
-      return { commandNameUnique: 'false' };
+  private commandNameUnique(control: FormControl) {
+    if (!control.value || control.value === this.command.name) {
+      return of(null);
     }
-    return null;
+    return timer(500).pipe(
+      switchMap(() => this.commandsService.getCommandForName(control.value).pipe(
+        catchError(error => of(null)),
+        map(command => {
+          if (command) {
+            return { commandNameUnique: 'false' };
+          } else {
+            return null;
+          }
+        })
+      )));
   }
 
   onSubmit() {

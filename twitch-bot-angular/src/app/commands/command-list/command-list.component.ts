@@ -1,6 +1,5 @@
 import { CommandsService } from './../commands.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Command } from '../command.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,7 +9,7 @@ import { Subscription } from 'rxjs';
 })
 export class CommandListComponent implements OnInit, OnDestroy {
 
-  commands: Command[] = [];
+  commands: string[] = [];
   subscription: Subscription;
 
   constructor(private commandsService: CommandsService) { }
@@ -18,7 +17,7 @@ export class CommandListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.commands = this.commandsService.getCommands();
     this.subscription = this.commandsService.commandsChanged.subscribe(
-      (commands: Command[]) => {
+      (commands: string[]) => {
         this.commands = commands;
       }
     );

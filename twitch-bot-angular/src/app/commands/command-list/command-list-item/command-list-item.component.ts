@@ -1,4 +1,3 @@
-import { Command } from './../../command.model';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -8,6 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class CommandListItemComponent {
 
-  @Input() command: Command;
+  @Input() command: string;
 
 }
