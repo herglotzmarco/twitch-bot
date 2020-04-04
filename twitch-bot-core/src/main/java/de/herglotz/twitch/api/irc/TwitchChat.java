@@ -25,8 +25,8 @@ import de.herglotz.IApplicationStatusProvider;
 import de.herglotz.twitch.credentials.CredentialProvider;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.manage.PingMessageEvent;
-import de.herglotz.twitch.events.manage.StopServicesEvent;
 import de.herglotz.twitch.events.manage.StartServicesEvent;
+import de.herglotz.twitch.events.manage.StopServicesEvent;
 import de.herglotz.twitch.messages.Message;
 
 @ApplicationScoped
@@ -58,8 +58,6 @@ public class TwitchChat implements IApplicationStatusProvider {
 				System.exit(1);
 			}
 		}
-		status = ApplicationStatus.STOPPED;
-		LOG.info("[SUCCESS] -> Stopping TwitchChat");
 	}
 
 	private void connectToTwitch(Socket twitchApi) throws IOException {
@@ -89,8 +87,12 @@ public class TwitchChat implements IApplicationStatusProvider {
 		String line;
 		TwitchMessageParser parser = new TwitchMessageParser();
 		while (status == ApplicationStatus.STARTED && (line = reader.readLine()) != null) {
-			Message message = parser.parse(line);
-			eventHandler.fire(message.toEvent());
+			if (status == ApplicationStatus.STARTED) { // might have changed while waiting
+				Message message = parser.parse(line);
+				eventHandler.fire(message.toEvent());
+			} else {
+				LOG.info("Dropping stale message: TwitchChat is already stopped");
+			}
 		}
 	}
 
@@ -111,7 +113,8 @@ public class TwitchChat implements IApplicationStatusProvider {
 			LOG.info("[SUCCESS] -> Starting TwitchChat");
 		} else if (event instanceof StopServicesEvent) {
 			LOG.info("Stopping TwitchChat...");
-			status = ApplicationStatus.STOPPING;
+			status = ApplicationStatus.STOPPED;
+			LOG.info("[SUCCESS] -> Stopping TwitchChat");
 		} else if (event instanceof PingMessageEvent) {
 			sendRawMessage(TwitchConstants.TWITCH_API_PONG);
 		}

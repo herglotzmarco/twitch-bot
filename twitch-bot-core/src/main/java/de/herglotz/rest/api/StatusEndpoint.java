@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import de.herglotz.ApplicationStatus;
 import de.herglotz.IApplicationStatusProvider;
 import de.herglotz.twitch.events.TwitchEvent;
-import de.herglotz.twitch.events.manage.StopServicesEvent;
 import de.herglotz.twitch.events.manage.StartServicesEvent;
+import de.herglotz.twitch.events.manage.StopServicesEvent;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 

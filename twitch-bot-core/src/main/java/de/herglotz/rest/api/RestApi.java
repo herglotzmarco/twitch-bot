@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import de.herglotz.IStartupListener;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+import io.javalin.core.util.Header;
 
 @ApplicationScoped
 public class RestApi implements IStartupListener {
@@ -28,6 +29,7 @@ public class RestApi implements IStartupListener {
 	public void onStart() {
 		LOG.info("Starting REST Api...");
 		Javalin api = Javalin.create(this::serveWebUI).start(7000);
+		configureCORS(api);
 		endpoints.forEach(endpoint -> endpoint.start(api));
 		Runtime.getRuntime().addShutdownHook(new Thread(api::stop));
 		LOG.info("[SUCCESS] -> Starting REST Api");
@@ -42,6 +44,14 @@ public class RestApi implements IStartupListener {
 		} else {
 			LOG.warn("front-end sources not found. Web-UI will not be available");
 		}
+	}
+
+	private void configureCORS(Javalin api) {
+		// needed for angular dev only
+		api.before(ctx -> ctx.header(Header.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:4200"));
+		api.before(ctx -> ctx.header(Header.ACCESS_CONTROL_ALLOW_METHODS, "PUT, GET, POST, DELETE"));
+		api.before(ctx -> ctx.header(Header.ACCESS_CONTROL_ALLOW_HEADERS, "content-type"));
+		api.options("/*", ctx -> ctx.status(200));
 	}
 
 }

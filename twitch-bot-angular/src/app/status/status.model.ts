@@ -18,4 +18,16 @@ export class Status {
         return new Status('stopping');
     }
 
+    static forName(status: string) {
+        switch (status.toLowerCase()) {
+            case 'stopped': return Status.stopped();
+            case 'started': return Status.started();
+            case 'starting': return Status.starting();
+            case 'stopping': return Status.stopping();
+            default:
+                console.log('Unknown Status: ' + status);
+                break;
+        }
+    }
+
 }
