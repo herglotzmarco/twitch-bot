@@ -1,9 +1,9 @@
 package de.herglotz.rest.api;
 
-import io.javalin.Javalin;
+import io.javalin.apibuilder.EndpointGroup;
 
 public interface RESTEndoint {
 
-	void start(Javalin api);
+	EndpointGroup registerEndpoints();
 
 }

@@ -61,19 +61,19 @@ public class CommandDAO {
 			ManageCommandsEvent manageEvent = (ManageCommandsEvent) event;
 			switch (manageEvent.getOperation()) {
 			case UPDATE:
-				addOrUpdateCustomCommand(manageEvent.getCommand(), manageEvent.getMessage());
+				addOrUpdateCustomCommand(manageEvent.getAffectedCommand(), manageEvent.getUpdatedCommand());
 				eventHandler.fire(new CommandsChangedEvent());
 				break;
 			case REMOVE:
-				deleteCustomCommand(manageEvent.getCommand());
+				deleteCustomCommand(manageEvent.getAffectedCommand());
 				eventHandler.fire(new CommandsChangedEvent());
 				break;
 			case UPDATE_TIMED:
-				addOrUpdateTimedCommand(manageEvent.getCommand(), manageEvent.getTimeInSeconds());
+				addOrUpdateTimedCommand(manageEvent.getAffectedCommand(), manageEvent.getTimeInSeconds());
 				eventHandler.fire(new CommandsChangedEvent());
 				break;
 			case REMOVE_TIMED:
-				deleteTimedCommand(manageEvent.getCommand());
+				deleteTimedCommand(manageEvent.getAffectedCommand());
 				eventHandler.fire(new CommandsChangedEvent());
 				break;
 			default:
@@ -82,37 +82,48 @@ public class CommandDAO {
 		}
 	}
 
-	private void addOrUpdateCustomCommand(String command, String message) {
-		Optional<CustomCommandEntity> existingCommand = fetchCustomCommand(command);
+	private void addOrUpdateCustomCommand(String affectedCommand, CustomCommandEntity updatedCommand) {
+		Optional<CustomCommandEntity> existingCommand = fetchCustomCommand(affectedCommand);
 		if (existingCommand.isPresent()) {
-			updateCustomCommand(existingCommand.get(), message);
+			updateCustomCommand(existingCommand.get(), updatedCommand);
 		} else {
-			addCustomCommand(command, message);
+			addCustomCommand(affectedCommand, updatedCommand);
 		}
 	}
 
-	private void addCustomCommand(String command, String message) {
+	private void addCustomCommand(String affectedCommand, CustomCommandEntity updatedCommand) {
 		entityManager.getTransaction().begin();
-		entityManager.persist(new CustomCommandEntity(command, message));
+		entityManager.persist(updatedCommand);
 		entityManager.getTransaction().commit();
-		LOG.info("[SUCCESS] -> Adding new command '{}'", command);
+		LOG.info("[SUCCESS] -> Adding new command '{}'", affectedCommand);
 	}
 
-	private void updateCustomCommand(CustomCommandEntity entity, String message) {
-		entityManager.getTransaction().begin();
-		entity.setMessage(message);
-		entityManager.merge(entity);
-		entityManager.getTransaction().commit();
-		LOG.info("[SUCCESS] -> Updating command '{}'", entity.getCommand());
+	private void updateCustomCommand(CustomCommandEntity affectedCommand, CustomCommandEntity updatedCommand) {
+		if (affectedCommand.getCommand().equals(updatedCommand.getCommand())) {
+			// update
+			entityManager.getTransaction().begin();
+			entityManager.merge(updatedCommand);
+			entityManager.getTransaction().commit();
+		} else {
+			// name changed -> delete old and save new
+			entityManager.getTransaction().begin();
+			entityManager.remove(affectedCommand);
+			entityManager.persist(updatedCommand);
+			entityManager.getTransaction().commit();
+		}
+		LOG.info("[SUCCESS] -> Updating command '{}'", affectedCommand.getCommand());
 	}
 
-	private void deleteCustomCommand(String command) {
-		entityManager.getTransaction().begin();
-		Query query = entityManager.createQuery("DELETE FROM CustomCommandEntity c WHERE c.command = :command");
-		query.setParameter("command", command);
-		query.executeUpdate();
-		entityManager.getTransaction().commit();
-		LOG.info("[SUCCESS] -> Removing command '{}'", command);
+	private void deleteCustomCommand(String affectedCommand) {
+		Optional<CustomCommandEntity> command = fetchCustomCommand(affectedCommand);
+		if (command.isPresent()) {
+			entityManager.getTransaction().begin();
+			entityManager.remove(command.get());
+			entityManager.getTransaction().commit();
+			LOG.info("[SUCCESS] -> Removing command '{}'", affectedCommand);
+		} else {
+			LOG.info("[FAILED] -> Removing command '{}'. Command does not exist", affectedCommand);
+		}
 	}
 
 	private void addOrUpdateTimedCommand(String command, int timeInSeconds) {

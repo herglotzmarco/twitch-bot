@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Status } from './status.model';
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
@@ -25,12 +26,12 @@ export class StatusService {
   }
 
   stopServices() {
-    this.http.put('http://localhost:7000/status/stop', {}).subscribe();
+    this.http.put(environment.restBase + '/status/stop', {}).subscribe();
     this.pollUntil(Status.stopped());
   }
 
   startServices() {
-    this.http.put('http://localhost:7000/status/start', {}).subscribe();
+    this.http.put(environment.restBase + '/status/start', {}).subscribe();
     this.pollUntil(Status.started());
   }
 
@@ -58,7 +59,7 @@ export class StatusService {
   }
 
   private fetchStatus(): Observable<Status> {
-    return this.http.get<{ status: string }>('http://localhost:7000/status')
+    return this.http.get<{ status: string }>(environment.restBase + '/status')
       .pipe(map((response) => {
         return Status.forName(response.status);
       }));

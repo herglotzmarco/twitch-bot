@@ -20,7 +20,7 @@ import de.herglotz.twitch.commands.TimedCommandEntity;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.manage.ManageCommandsEvent;
-import io.javalin.Javalin;
+import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 
 @ApplicationScoped
@@ -35,13 +35,13 @@ public class CommandsEndpoint implements RESTEndoint {
 	private Event<TwitchEvent> eventHandler;
 
 	@Override
-	public void start(Javalin api) {
-		api.routes(() -> {
+	public EndpointGroup registerEndpoints() {
+		return () -> {
 			path("commands", () -> {
 				get(this::getCommands);
 				path(":name", () -> {
 					get(this::getCommandWithName);
-					put(this::updateCommandMessage);
+					put(this::updateCommand);
 					delete(this::deleteCommand);
 				});
 			});
@@ -53,7 +53,7 @@ public class CommandsEndpoint implements RESTEndoint {
 					delete(this::deleteTimedCommand);
 				});
 			});
-		});
+		};
 	}
 
 	private void getCommands(Context ctx) {
@@ -64,7 +64,7 @@ public class CommandsEndpoint implements RESTEndoint {
 	}
 
 	private void getCommandWithName(Context ctx) {
-		Optional<CustomCommandResponse> response = commandDAO.fetchCustomCommand(ctx.pathParam("name"))
+		Optional<CustomCommandRepresentation> response = commandDAO.fetchCustomCommand(ctx.pathParam("name"))
 				.map(this::response);
 		if (response.isPresent()) {
 			ctx.json(response.get());
@@ -75,10 +75,10 @@ public class CommandsEndpoint implements RESTEndoint {
 		}
 	}
 
-	private void updateCommandMessage(Context ctx) {
-		String message = ctx.body();
-		String command = ctx.pathParam("name");
-		eventHandler.fire(ManageCommandsEvent.update(command, message));
+	private void updateCommand(Context ctx) {
+		CustomCommandRepresentation command = ctx.bodyAsClass(CustomCommandRepresentation.class);
+		String name = ctx.pathParam("name");
+		eventHandler.fire(ManageCommandsEvent.update(name, new CustomCommandEntity(command.command, command.message)));
 		LOG.info("[200] -> updateCommandMessage");
 	}
 
@@ -118,25 +118,28 @@ public class CommandsEndpoint implements RESTEndoint {
 		LOG.info("[200] -> deleteTimedCommand");
 	}
 
-	private CustomCommandResponse response(CustomCommandEntity command) {
-		return new CustomCommandResponse(command.getCommand(), command.getMessage());
+	private CustomCommandRepresentation response(CustomCommandEntity command) {
+		return new CustomCommandRepresentation(command.getCommand(), command.getMessage());
 	}
 
 	private TimedCommandResponse response(TimedCommandEntity command) {
 		return new TimedCommandResponse(command.getCommand(), command.getTimeInSeconds());
 	}
 
-	public class CustomCommandResponse {
+	public static class CustomCommandRepresentation {
 		public String command;
 		public String message;
 
-		public CustomCommandResponse(String command, String message) {
+		public CustomCommandRepresentation() {
+		}
+
+		public CustomCommandRepresentation(String command, String message) {
 			this.command = command;
 			this.message = message;
 		}
 	}
 
-	public class TimedCommandResponse {
+	public static class TimedCommandResponse {
 		public String command;
 		public int timeInSeconds;
 

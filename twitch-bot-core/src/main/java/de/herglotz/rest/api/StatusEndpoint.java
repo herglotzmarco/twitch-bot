@@ -17,7 +17,7 @@ import de.herglotz.IApplicationStatusProvider;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.manage.StartServicesEvent;
 import de.herglotz.twitch.events.manage.StopServicesEvent;
-import io.javalin.Javalin;
+import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 
 @ApplicationScoped
@@ -32,8 +32,8 @@ public class StatusEndpoint implements RESTEndoint {
 	private Instance<IApplicationStatusProvider> statusProvider;
 
 	@Override
-	public void start(Javalin api) {
-		api.routes(() -> {
+	public EndpointGroup registerEndpoints() {
+		return () -> {
 			path("status", () -> {
 				get(this::getStatus);
 				path("start", () -> {
@@ -43,7 +43,7 @@ public class StatusEndpoint implements RESTEndoint {
 					put(this::stopServices);
 				});
 			});
-		});
+		};
 	}
 
 	private void getStatus(Context ctx) {

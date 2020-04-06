@@ -1,34 +1,36 @@
 package de.herglotz.twitch.events.manage;
 
+import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.events.TwitchEvent;
 
 public class ManageCommandsEvent implements TwitchEvent {
 
 	private ManageCommandOperation operation;
-	private String command;
-	private String message;
+	private String affectedCommand;
+	private CustomCommandEntity updatedCommand;
 	private int timeInSeconds;
 
-	public static ManageCommandsEvent update(String command, String message) {
-		return new ManageCommandsEvent(ManageCommandOperation.UPDATE, command, message, 0);
+	public static ManageCommandsEvent update(String affectedCommand, CustomCommandEntity updatedCommand) {
+		return new ManageCommandsEvent(ManageCommandOperation.UPDATE, affectedCommand, updatedCommand, 0);
 	}
 
-	public static ManageCommandsEvent remove(String command) {
-		return new ManageCommandsEvent(ManageCommandOperation.REMOVE, command, null, 0);
+	public static ManageCommandsEvent remove(String affectedCommand) {
+		return new ManageCommandsEvent(ManageCommandOperation.REMOVE, affectedCommand, null, 0);
 	}
 
-	public static ManageCommandsEvent updateTimed(String command, int timeInSeconds) {
-		return new ManageCommandsEvent(ManageCommandOperation.UPDATE_TIMED, command, null, timeInSeconds);
+	public static ManageCommandsEvent updateTimed(String affectedCommand, int timeInSeconds) {
+		return new ManageCommandsEvent(ManageCommandOperation.UPDATE_TIMED, affectedCommand, null, timeInSeconds);
 	}
 
-	public static ManageCommandsEvent removeTimed(String command) {
-		return new ManageCommandsEvent(ManageCommandOperation.REMOVE_TIMED, command, null, -1);
+	public static ManageCommandsEvent removeTimed(String affectedCommand) {
+		return new ManageCommandsEvent(ManageCommandOperation.REMOVE_TIMED, affectedCommand, null, -1);
 	}
 
-	private ManageCommandsEvent(ManageCommandOperation operation, String command, String message, int timeInSeconds) {
+	private ManageCommandsEvent(ManageCommandOperation operation, String affectedCommand,
+			CustomCommandEntity updatedCommand, int timeInSeconds) {
 		this.operation = operation;
-		this.command = command;
-		this.message = message;
+		this.affectedCommand = affectedCommand;
+		this.updatedCommand = updatedCommand;
 		this.timeInSeconds = timeInSeconds;
 	}
 
@@ -36,12 +38,12 @@ public class ManageCommandsEvent implements TwitchEvent {
 		return operation;
 	}
 
-	public String getCommand() {
-		return command;
+	public String getAffectedCommand() {
+		return affectedCommand;
 	}
 
-	public String getMessage() {
-		return message;
+	public CustomCommandEntity getUpdatedCommand() {
+		return updatedCommand;
 	}
 
 	public int getTimeInSeconds() {

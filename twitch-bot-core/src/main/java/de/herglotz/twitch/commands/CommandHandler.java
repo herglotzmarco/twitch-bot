@@ -28,8 +28,8 @@ import de.herglotz.twitch.commands.custom.CustomCommand;
 import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.change.CommandsChangedEvent;
-import de.herglotz.twitch.events.manage.StopServicesEvent;
 import de.herglotz.twitch.events.manage.StartServicesEvent;
+import de.herglotz.twitch.events.manage.StopServicesEvent;
 import de.herglotz.twitch.events.message.CommandMessageEvent;
 import de.herglotz.twitch.messages.CommandMessage;
 
@@ -57,10 +57,16 @@ public class CommandHandler implements IApplicationStatusProvider {
 		commands.add(new HiCommand());
 		commands.addAll(fetchAllCommands());
 
+		if (!timedCommands.isEmpty()) {
+			restartTimedCommands();
+		}
+		LOG.info("[SUCCESS] -> Reloading commands");
+	}
+
+	private void restartTimedCommands() {
 		timedCommands.values().forEach(Timer::cancel);
 		timedCommands.clear();
 		timedCommands.putAll(startTimedCommands());
-		LOG.info("[SUCCESS] -> Reloading commands");
 	}
 
 	private List<CustomCommand> fetchAllCommands() {
@@ -99,6 +105,7 @@ public class CommandHandler implements IApplicationStatusProvider {
 			LOG.info("Starting CommandHandler...");
 			status = ApplicationStatus.STARTING;
 			reload();
+			restartTimedCommands();
 			status = ApplicationStatus.STARTED;
 			LOG.info("[SUCCESS] -> Starting CommandHandler");
 		} else if (event instanceof StopServicesEvent) {
