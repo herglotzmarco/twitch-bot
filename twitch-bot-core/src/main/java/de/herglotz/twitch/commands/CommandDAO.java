@@ -7,9 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +15,7 @@ import de.herglotz.twitch.commands.custom.CustomCommandEntity;
 import de.herglotz.twitch.events.TwitchEvent;
 import de.herglotz.twitch.events.change.CommandsChangedEvent;
 import de.herglotz.twitch.events.manage.ManageCommandsEvent;
+import de.herglotz.twitch.persistence.QueryExecutor;
 
 @ApplicationScoped
 public class CommandDAO {
@@ -25,35 +23,27 @@ public class CommandDAO {
 	private static final Logger LOG = LoggerFactory.getLogger(CommandDAO.class);
 
 	@Inject
-	private EntityManager entityManager;
+	private QueryExecutor database;
 
 	@Inject
 	private Event<TwitchEvent> eventHandler;
 
 	public List<CustomCommandEntity> fetchCustomCommands() {
-		return entityManager.createQuery("SELECT c FROM CustomCommandEntity c", CustomCommandEntity.class)
-				.getResultList();
+		return database.list(CustomCommandEntity.class).select("SELECT * FROM CustomCommandEntity c");
 	}
 
 	public Optional<CustomCommandEntity> fetchCustomCommand(String command) {
-		TypedQuery<CustomCommandEntity> query = entityManager.createQuery("SELECT c FROM CustomCommandEntity c " //
-				+ "WHERE c.command = :command", //
-				CustomCommandEntity.class);
-		query.setParameter("command", command);
-		return query.getResultList().stream().findFirst();
+		return database.optional(CustomCommandEntity.class)
+				.select("SELECT * FROM CustomCommandEntity c WHERE c.command = ?", command);
 	}
 
 	public List<TimedCommandEntity> fetchTimedCommands() {
-		return entityManager.createQuery("SELECT c FROM TimedCommandEntity c", TimedCommandEntity.class)//
-				.getResultList();
+		return database.list(TimedCommandEntity.class).select("SELECT * FROM TimedCommandEntity c");
 	}
 
 	public Optional<TimedCommandEntity> fetchTimedCommand(String command) {
-		TypedQuery<TimedCommandEntity> query = entityManager.createQuery(
-				"SELECT c FROM TimedCommandEntity c " + "WHERE c.command = :command", //
-				TimedCommandEntity.class);
-		query.setParameter("command", command);
-		return query.getResultList().stream().findFirst();
+		return database.optional(TimedCommandEntity.class)
+				.select("SELECT * FROM TimedCommandEntity c WHERE c.command = ?", command);
 	}
 
 	public void handleEvent(@Observes TwitchEvent event) {
@@ -87,29 +77,25 @@ public class CommandDAO {
 		if (existingCommand.isPresent()) {
 			updateCustomCommand(existingCommand.get(), updatedCommand);
 		} else {
-			addCustomCommand(affectedCommand, updatedCommand);
+			addCustomCommand(updatedCommand);
 		}
 	}
 
-	private void addCustomCommand(String affectedCommand, CustomCommandEntity updatedCommand) {
-		entityManager.getTransaction().begin();
-		entityManager.persist(updatedCommand);
-		entityManager.getTransaction().commit();
-		LOG.info("[SUCCESS] -> Adding new command '{}'", affectedCommand);
+	private void addCustomCommand(CustomCommandEntity updatedCommand) {
+		database.insert("INSERT INTO CustomCommandEntity (command, message) VALUES (?, ?)", updatedCommand.getCommand(),
+				updatedCommand.getMessage());
+		LOG.info("[SUCCESS] -> Adding new command '{}'", updatedCommand);
 	}
 
 	private void updateCustomCommand(CustomCommandEntity affectedCommand, CustomCommandEntity updatedCommand) {
 		if (affectedCommand.getCommand().equals(updatedCommand.getCommand())) {
 			// update
-			entityManager.getTransaction().begin();
-			entityManager.merge(updatedCommand);
-			entityManager.getTransaction().commit();
+			database.update("UPDATE CustomCommandEntity c WHERE c.command = ? SET c.message = ?",
+					affectedCommand.getCommand(), updatedCommand.getMessage());
 		} else {
 			// name changed -> delete old and save new
-			entityManager.getTransaction().begin();
-			entityManager.remove(affectedCommand);
-			entityManager.persist(updatedCommand);
-			entityManager.getTransaction().commit();
+			deleteCustomCommand(affectedCommand.getCommand());
+			addCustomCommand(updatedCommand);
 		}
 		LOG.info("[SUCCESS] -> Updating command '{}'", affectedCommand.getCommand());
 	}
@@ -117,9 +103,7 @@ public class CommandDAO {
 	private void deleteCustomCommand(String affectedCommand) {
 		Optional<CustomCommandEntity> command = fetchCustomCommand(affectedCommand);
 		if (command.isPresent()) {
-			entityManager.getTransaction().begin();
-			entityManager.remove(command.get());
-			entityManager.getTransaction().commit();
+			database.delete("DELETE FROM CustomCommandEntity c WHERE c.command = ?", affectedCommand);
 			LOG.info("[SUCCESS] -> Removing command '{}'", affectedCommand);
 		} else {
 			LOG.info("[FAILED] -> Removing command '{}'. Command does not exist", affectedCommand);
@@ -136,26 +120,19 @@ public class CommandDAO {
 	}
 
 	private void addTimedCommand(String command, int timeInSeconds) {
-		entityManager.getTransaction().begin();
-		entityManager.persist(new TimedCommandEntity(command, timeInSeconds));
-		entityManager.getTransaction().commit();
+		database.insert("INSERT INTO TimedCommandEntity (command, timeInSeconds) VALUES (?, ?)", command,
+				timeInSeconds);
 		LOG.info("[SUCCESS] -> Adding timed command '{}'", command);
 	}
 
 	private void updateTimedCommand(TimedCommandEntity entity, int timeInSeconds) {
-		entityManager.getTransaction().begin();
-		entity.setTimeInSeconds(timeInSeconds);
-		entityManager.merge(entity);
-		entityManager.getTransaction().commit();
+		database.insert("UPDATE TimedCommandEntity c WHERE c.command = ? SET timeInSeconds = ?", entity.getCommand(),
+				timeInSeconds);
 		LOG.info("[SUCCESS] -> Updating timed command '{}'", entity.getCommand());
 	}
 
 	private void deleteTimedCommand(String command) {
-		entityManager.getTransaction().begin();
-		Query query = entityManager.createQuery("DELETE FROM TimedCommandEntity c WHERE c.command = :command");
-		query.setParameter("command", command);
-		query.executeUpdate();
-		entityManager.getTransaction().commit();
+		database.delete("DELETE FROM TimedCommandEntity c WHERE c.command = ?", command);
 		LOG.info("[SUCCESS] -> Removing timed command '{}'", command);
 	}
 

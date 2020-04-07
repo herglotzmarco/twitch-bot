@@ -2,17 +2,9 @@ package de.herglotz.twitch.commands;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class TimedCommandEntity {
 
-	@Id
 	private String command;
-
-	@Column
 	private int timeInSeconds;
 
 	public TimedCommandEntity() {

@@ -2,17 +2,9 @@ package de.herglotz.twitch.commands.custom;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class CustomCommandEntity {
 
-	@Id
 	private String command;
-
-	@Column
 	private String message;
 
 	public CustomCommandEntity() {
