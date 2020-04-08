@@ -82,20 +82,27 @@ public class CommandDAO {
 	}
 
 	private void addCustomCommand(CustomCommandEntity updatedCommand) {
-		database.insert("INSERT INTO CustomCommandEntity (command, message) VALUES (?, ?)", updatedCommand.getCommand(),
-				updatedCommand.getMessage());
+		database.transaction()//
+				.insert("INSERT INTO CustomCommandEntity (command, message) VALUES (?, ?)", updatedCommand.getCommand(),
+						updatedCommand.getMessage())//
+				.commit();
 		LOG.info("[SUCCESS] -> Adding new command '{}'", updatedCommand);
 	}
 
 	private void updateCustomCommand(CustomCommandEntity affectedCommand, CustomCommandEntity updatedCommand) {
 		if (affectedCommand.getCommand().equals(updatedCommand.getCommand())) {
 			// update
-			database.update("UPDATE CustomCommandEntity c WHERE c.command = ? SET c.message = ?",
-					affectedCommand.getCommand(), updatedCommand.getMessage());
+			database.transaction()//
+					.update("UPDATE CustomCommandEntity c WHERE c.command = ? SET c.message = ?",
+							affectedCommand.getCommand(), updatedCommand.getMessage())//
+					.commit();
 		} else {
 			// name changed -> delete old and save new
-			deleteCustomCommand(affectedCommand.getCommand());
-			addCustomCommand(updatedCommand);
+			database.transaction()//
+					.delete("DELETE FROM CustomCommandEntity c WHERE c.command = ?", affectedCommand.getCommand())//
+					.insert("INSERT INTO CustomCommandEntity (command, message) VALUES (?, ?)",
+							updatedCommand.getCommand(), updatedCommand.getMessage())//
+					.commit();
 		}
 		LOG.info("[SUCCESS] -> Updating command '{}'", affectedCommand.getCommand());
 	}
@@ -103,7 +110,9 @@ public class CommandDAO {
 	private void deleteCustomCommand(String affectedCommand) {
 		Optional<CustomCommandEntity> command = fetchCustomCommand(affectedCommand);
 		if (command.isPresent()) {
-			database.delete("DELETE FROM CustomCommandEntity c WHERE c.command = ?", affectedCommand);
+			database.transaction()//
+					.delete("DELETE FROM CustomCommandEntity c WHERE c.command = ?", affectedCommand)//
+					.commit();
 			LOG.info("[SUCCESS] -> Removing command '{}'", affectedCommand);
 		} else {
 			LOG.info("[FAILED] -> Removing command '{}'. Command does not exist", affectedCommand);
@@ -120,19 +129,24 @@ public class CommandDAO {
 	}
 
 	private void addTimedCommand(String command, int timeInSeconds) {
-		database.insert("INSERT INTO TimedCommandEntity (command, timeInSeconds) VALUES (?, ?)", command,
-				timeInSeconds);
+		database.transaction()//
+				.insert("INSERT INTO TimedCommandEntity (command, timeInSeconds) VALUES (?, ?)", command, timeInSeconds)//
+				.commit();
 		LOG.info("[SUCCESS] -> Adding timed command '{}'", command);
 	}
 
 	private void updateTimedCommand(TimedCommandEntity entity, int timeInSeconds) {
-		database.insert("UPDATE TimedCommandEntity c WHERE c.command = ? SET timeInSeconds = ?", entity.getCommand(),
-				timeInSeconds);
+		database.transaction()//
+				.insert("UPDATE TimedCommandEntity c WHERE c.command = ? SET timeInSeconds = ?", entity.getCommand(),
+						timeInSeconds)//
+				.commit();
 		LOG.info("[SUCCESS] -> Updating timed command '{}'", entity.getCommand());
 	}
 
 	private void deleteTimedCommand(String command) {
-		database.delete("DELETE FROM TimedCommandEntity c WHERE c.command = ?", command);
+		database.transaction()//
+				.delete("DELETE FROM TimedCommandEntity c WHERE c.command = ?", command)//
+				.commit();
 		LOG.info("[SUCCESS] -> Removing timed command '{}'", command);
 	}
 

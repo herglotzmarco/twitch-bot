@@ -43,7 +43,7 @@ public class Database {
 
 	@Produces
 	@RequestScoped
-	public QueryExecutor produceEntityManager() {
+	public QueryExecutor produceQueryExecutor() {
 		return new QueryExecutor(new QueryRunner(datasource));
 	}
 
