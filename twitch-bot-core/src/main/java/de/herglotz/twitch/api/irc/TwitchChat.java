@@ -68,7 +68,7 @@ public class TwitchChat implements IApplicationStatusProvider {
 		writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
 		reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
-		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getOAuthToken()));
+		writer.println(String.format(TwitchConstants.TWITCH_API_OAUTH, credentialProvider.getIrcOAuth()));
 		writer.println(String.format(TwitchConstants.TWITCH_API_NICK, credentialProvider.getBotUsername()));
 		writer.println(TwitchConstants.TWITCH_API_REQCOMMANDS);
 		writer.println(String.format(TwitchConstants.TWITCH_API_JOIN, credentialProvider.getTargetChannel()));

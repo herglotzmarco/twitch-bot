@@ -29,11 +29,15 @@ public class CredentialProvider {
 		return getProperties().getProperty("USERNAME", "");
 	}
 
-	public String getOAuthToken() {
-		return getProperties().getProperty("OAUTH_TOKEN", "");
+	public String getClientSecret() {
+		return getProperties().getProperty("CLIENT_SECRET", "");
 	}
 
-	public String getApiClientId() {
+	public String getIrcOAuth() {
+		return getProperties().getProperty("IRC_OAUTH", "");
+	}
+
+	public String getClientId() {
 		return getProperties().getProperty("CLIENT_ID", "");
 	}
 
